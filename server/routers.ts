@@ -23,6 +23,84 @@ export const appRouter = router({
     list: publicProcedure.query(async () => {
       return await db.getAllBausteine();
     }),
+
+    listAll: protectedProcedure.query(async () => {
+      return await db.getAllBausteineIncludingInactive();
+    }),
+
+    search: protectedProcedure
+      .input(z.object({ searchTerm: z.string() }))
+      .query(async ({ input }) => {
+        if (!input.searchTerm) {
+          return await db.getAllBausteineIncludingInactive();
+        }
+        return await db.searchBausteine(input.searchTerm);
+      }),
+
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getBausteinById(input.id);
+      }),
+
+    create: protectedProcedure
+      .input(
+        z.object({
+          name: z.string().min(1),
+          beschreibung: z.string().optional(),
+          einzelpreis: z.number().min(0),
+          kategorie: z.string().optional(),
+          reihenfolge: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const id = await db.createBaustein({
+          name: input.name,
+          beschreibung: input.beschreibung || null,
+          einzelpreis: input.einzelpreis,
+          kategorie: input.kategorie || null,
+          reihenfolge: input.reihenfolge || 0,
+          aktiv: true,
+        });
+        return { id };
+      }),
+
+    update: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          name: z.string().min(1).optional(),
+          beschreibung: z.string().optional(),
+          einzelpreis: z.number().min(0).optional(),
+          kategorie: z.string().optional(),
+          reihenfolge: z.number().optional(),
+          aktiv: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...updates } = input;
+        await db.updateBaustein(id, updates);
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteBaustein(input.id);
+        return { success: true };
+      }),
+
+    duplicate: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          newName: z.string().min(1),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const id = await db.duplicateBaustein(input.id, input.newName);
+        return { id };
+      }),
   }),
 
   laender: router({

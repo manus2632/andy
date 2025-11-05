@@ -27,6 +27,14 @@ export default function Home() {
             >
               Neues Angebot erstellen
             </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => setLocation("/bausteine")}
+              className="px-8 py-6 text-lg"
+            >
+              Baustein-Bibliothek
+            </Button>
           </div>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">

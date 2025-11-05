@@ -19,3 +19,13 @@
 - [ ] Anbindung an Projekttool
 - [ ] Mehrsprachigkeit
 - [ ] Angebots-Historie und Verwaltung
+
+## Baustein-Verwaltung
+
+- [x] Backend: CRUD-Routers für Bausteine (Erstellen, Bearbeiten, Löschen)
+- [x] Backend: Duplizieren-Funktion für Bausteine
+- [x] Frontend: Baustein-Bibliothek Seite erstellen
+- [x] Frontend: Suchfunktion für Bausteine
+- [x] Frontend: Baustein erstellen Dialog
+- [x] Frontend: Baustein bearbeiten Dialog
+- [x] Frontend: Baustein duplizieren Funktion

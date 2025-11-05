@@ -7,13 +7,15 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import AngebotErstellen from "./pages/AngebotErstellen";
 import AngebotVorschau from "./pages/AngebotVorschau";
+import BausteinBibliothek from "./pages/BausteinBibliothek";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
-      <Route path={"/angebot/:id"} component={AngebotVorschau} />
+      <Route path={"angebot/:id"} component={AngebotVorschau} />
+      <Route path={"/bausteine"} component={BausteinBibliothek} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

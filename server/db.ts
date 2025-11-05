@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser,
@@ -12,6 +12,8 @@ import {
   InsertAngebot,
   InsertAngebotBaustein,
   InsertAngebotLand,
+  InsertBaustein,
+  Baustein,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -111,6 +113,29 @@ export async function getAllBausteine() {
   return await db.select().from(bausteine).where(eq(bausteine.aktiv, true));
 }
 
+export async function getAllBausteineIncludingInactive() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(bausteine);
+}
+
+export async function searchBausteine(searchTerm: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const searchPattern = `%${searchTerm}%`;
+  return await db
+    .select()
+    .from(bausteine)
+    .where(
+      or(
+        like(bausteine.name, searchPattern),
+        like(bausteine.beschreibung, searchPattern),
+        like(bausteine.kategorie, searchPattern)
+      )
+    );
+}
+
 export async function getBausteinById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
@@ -123,6 +148,49 @@ export async function getBausteineByIds(ids: number[]) {
   if (!db) return [];
   if (ids.length === 0) return [];
   return await db.select().from(bausteine).where(inArray(bausteine.id, ids));
+}
+
+export async function createBaustein(baustein: InsertBaustein) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(bausteine).values(baustein);
+  return result[0].insertId;
+}
+
+export async function updateBaustein(id: number, baustein: Partial<InsertBaustein>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(bausteine).set(baustein).where(eq(bausteine.id, id));
+}
+
+export async function deleteBaustein(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Soft delete
+  await db.update(bausteine).set({ aktiv: false }).where(eq(bausteine.id, id));
+}
+
+export async function duplicateBaustein(id: number, newName: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const original = await getBausteinById(id);
+  if (!original) throw new Error("Baustein not found");
+
+  const duplicate: InsertBaustein = {
+    name: newName,
+    beschreibung: original.beschreibung,
+    einzelpreis: original.einzelpreis,
+    kategorie: original.kategorie,
+    reihenfolge: original.reihenfolge,
+    aktiv: true,
+  };
+
+  const result = await db.insert(bausteine).values(duplicate);
+  return result[0].insertId;
 }
 
 // Länder
