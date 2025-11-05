@@ -1,11 +1,22 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  InsertUser,
+  users,
+  bausteine,
+  laender,
+  ansprechpartner,
+  angebote,
+  angebotBausteine,
+  angebotLaender,
+  InsertAngebot,
+  InsertAngebotBaustein,
+  InsertAngebotLand,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -56,8 +67,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -84,9 +95,141 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Bausteine
+export async function getAllBausteine() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(bausteine).where(eq(bausteine.aktiv, true));
+}
+
+export async function getBausteinById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(bausteine).where(eq(bausteine.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getBausteineByIds(ids: number[]) {
+  const db = await getDb();
+  if (!db) return [];
+  if (ids.length === 0) return [];
+  return await db.select().from(bausteine).where(inArray(bausteine.id, ids));
+}
+
+// Länder
+export async function getAllLaender() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(laender).where(eq(laender.aktiv, true));
+}
+
+export async function getLaenderByIds(ids: number[]) {
+  const db = await getDb();
+  if (!db) return [];
+  if (ids.length === 0) return [];
+  return await db.select().from(laender).where(inArray(laender.id, ids));
+}
+
+// Ansprechpartner
+export async function getAllAnsprechpartner() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(ansprechpartner).where(eq(ansprechpartner.aktiv, true));
+}
+
+export async function getAnsprechpartnerById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(ansprechpartner)
+    .where(eq(ansprechpartner.id, id))
+    .limit(1);
+  return result[0];
+}
+
+// Angebote
+export async function createAngebot(angebot: InsertAngebot) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(angebote).values(angebot);
+  return result[0].insertId;
+}
+
+export async function addAngebotBausteine(angebotId: number, bausteinIds: number[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const values: InsertAngebotBaustein[] = bausteinIds.map((bausteinId) => ({
+    angebotId,
+    bausteinId,
+  }));
+
+  await db.insert(angebotBausteine).values(values);
+}
+
+export async function addAngebotLaender(angebotId: number, laenderIds: number[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const values: InsertAngebotLand[] = laenderIds.map((landId) => ({
+    angebotId,
+    landId,
+  }));
+
+  await db.insert(angebotLaender).values(values);
+}
+
+export async function getAngebotById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(angebote).where(eq(angebote.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getAngebotBausteine(angebotId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({
+      baustein: bausteine,
+    })
+    .from(angebotBausteine)
+    .innerJoin(bausteine, eq(angebotBausteine.bausteinId, bausteine.id))
+    .where(eq(angebotBausteine.angebotId, angebotId));
+
+  return result.map((r) => r.baustein);
+}
+
+export async function getAngebotLaender(angebotId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  const result = await db
+    .select({
+      land: laender,
+    })
+    .from(angebotLaender)
+    .innerJoin(laender, eq(angebotLaender.landId, laender.id))
+    .where(eq(angebotLaender.angebotId, angebotId));
+
+  return result.map((r) => r.land);
+}
+
+export async function getAllAngebote() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(angebote);
+}
