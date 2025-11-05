@@ -37,3 +37,8 @@
 - [x] Frontend: Preisanpassungs-Dialog für Bausteine
 - [x] Frontend: Anzeige angepasster Preise im Formular
 - [x] Angebot: Nur Endpreise anzeigen, keine Anpassungshinweise
+
+## Routing-Optimierung
+
+- [x] Startseite entfernen, direkt zur Angebotserstellung weiterleiten
+- [x] Navigation anpassen

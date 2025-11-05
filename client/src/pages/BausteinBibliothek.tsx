@@ -168,7 +168,7 @@ export default function BausteinBibliothek() {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="mb-6 flex justify-between items-center">
           <Button variant="outline" onClick={() => setLocation("/")}>
-            ← Zurück
+            ← Zur Angebotserstellung
           </Button>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />

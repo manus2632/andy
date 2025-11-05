@@ -38,7 +38,7 @@ export default function AngebotVorschau() {
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="mb-6 flex justify-between items-center">
           <Button variant="outline" onClick={() => setLocation("/")}>
-            ← Zurück
+            ← Neue Angebotserstellung
           </Button>
           <Button onClick={() => window.print()}>PDF herunterladen</Button>
         </div>

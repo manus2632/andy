@@ -12,7 +12,7 @@ import BausteinBibliothek from "./pages/BausteinBibliothek";
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={AngebotErstellen} />
       <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
       <Route path={"angebot/:id"} component={AngebotVorschau} />
       <Route path={"/bausteine"} component={BausteinBibliothek} />

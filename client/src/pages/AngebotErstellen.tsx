@@ -223,13 +223,14 @@ export default function AngebotErstellen() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="mb-6">
-          <Button variant="outline" onClick={() => setLocation("/")}>
-            ← Zurück
+        <div className="mb-6 flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Neues Angebot erstellen</h1>
+          <Button variant="outline" onClick={() => setLocation("/bausteine")}>
+            Baustein-Bibliothek
           </Button>
         </div>
 
-        <h1 className="text-3xl font-bold mb-8">Neues Angebot erstellen</h1>
+
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
