@@ -77,6 +77,9 @@ export const angebotBausteine = mysqlTable("angebotBausteine", {
   id: int("id").autoincrement().primaryKey(),
   angebotId: int("angebotId").notNull(),
   bausteinId: int("bausteinId").notNull(),
+  angepassterPreis: int("angepassterPreis"), // NULL = Standard-Preis, sonst individueller Preis
+  anpassungsTyp: mysqlEnum("anpassungsTyp", ["direkt", "prozent"]),
+  anpassungsWert: int("anpassungsWert"), // Bei direkt: Preis in EUR, bei prozent: Prozentsatz
 });
 
 export type AngebotBaustein = typeof angebotBausteine.$inferSelect;

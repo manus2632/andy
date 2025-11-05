@@ -12,10 +12,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Settings } from "lucide-react";
+
+interface BausteinMitPreis {
+  bausteinId: number;
+  angepassterPreis?: number;
+  anpassungsTyp?: "direkt" | "prozent";
+  anpassungsWert?: number;
+}
 
 export default function AngebotErstellen() {
   const [, setLocation] = useLocation();
@@ -25,9 +39,15 @@ export default function AngebotErstellen() {
   const [projekttitel, setProjekttitel] = useState("");
   const [gueltigkeitsdatum, setGueltigkeitsdatum] = useState("");
   const [ansprechpartnerId, setAnsprechpartnerId] = useState<string>("");
-  const [selectedBausteine, setSelectedBausteine] = useState<number[]>([]);
+  const [selectedBausteine, setSelectedBausteine] = useState<BausteinMitPreis[]>([]);
   const [selectedLaender, setSelectedLaender] = useState<number[]>([]);
   const [lieferart, setLieferart] = useState<"einmalig" | "rahmenvertrag">("einmalig");
+
+  // Price adjustment dialog
+  const [isPriceDialogOpen, setIsPriceDialogOpen] = useState(false);
+  const [currentBaustein, setCurrentBaustein] = useState<number | null>(null);
+  const [adjustmentType, setAdjustmentType] = useState<"direkt" | "prozent">("direkt");
+  const [adjustmentValue, setAdjustmentValue] = useState<string>("");
 
   // Queries
   const { data: bausteine = [], isLoading: bausteineLoading } = trpc.bausteine.list.useQuery();
@@ -43,8 +63,9 @@ export default function AngebotErstellen() {
       return null;
     }
 
+    const bausteinIds = selectedBausteine.map((b) => b.bausteinId);
     calculateMutation.mutate({
-      bausteinIds: selectedBausteine,
+      bausteinIds,
       laenderIds: selectedLaender,
       lieferart,
     });
@@ -86,22 +107,109 @@ export default function AngebotErstellen() {
       projekttitel,
       gueltigkeitsdatum,
       ansprechpartnerId: parseInt(ansprechpartnerId),
-      bausteinIds: selectedBausteine,
+      bausteine: selectedBausteine,
       laenderIds: selectedLaender,
       lieferart,
     });
   };
 
   const toggleBaustein = (id: number) => {
-    setSelectedBausteine((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedBausteine((prev) => {
+      const exists = prev.find((b) => b.bausteinId === id);
+      if (exists) {
+        return prev.filter((b) => b.bausteinId !== id);
+      } else {
+        return [...prev, { bausteinId: id }];
+      }
+    });
   };
 
   const toggleLand = (id: number) => {
     setSelectedLaender((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
+  };
+
+  const openPriceDialog = (bausteinId: number) => {
+    const baustein = selectedBausteine.find((b) => b.bausteinId === bausteinId);
+    setCurrentBaustein(bausteinId);
+    
+    if (baustein?.anpassungsTyp) {
+      setAdjustmentType(baustein.anpassungsTyp);
+      setAdjustmentValue(baustein.anpassungsWert?.toString() || "");
+    } else {
+      setAdjustmentType("direkt");
+      setAdjustmentValue("");
+    }
+    
+    setIsPriceDialogOpen(true);
+  };
+
+  const savePriceAdjustment = () => {
+    if (!currentBaustein) return;
+
+    const value = parseFloat(adjustmentValue);
+    if (isNaN(value)) {
+      toast.error("Bitte geben Sie einen gültigen Wert ein");
+      return;
+    }
+
+    setSelectedBausteine((prev) =>
+      prev.map((b) => {
+        if (b.bausteinId === currentBaustein) {
+          const originalBaustein = bausteine.find((bs) => bs.id === currentBaustein);
+          const originalPreis = originalBaustein?.einzelpreis || 0;
+
+          let angepassterPreis: number;
+          if (adjustmentType === "direkt") {
+            angepassterPreis = value;
+          } else {
+            // Prozentuale Anpassung
+            angepassterPreis = Math.round(originalPreis * (1 + value / 100));
+          }
+
+          return {
+            ...b,
+            angepassterPreis,
+            anpassungsTyp: adjustmentType,
+            anpassungsWert: value,
+          };
+        }
+        return b;
+      })
+    );
+
+    setIsPriceDialogOpen(false);
+    setCurrentBaustein(null);
+    setAdjustmentValue("");
+  };
+
+  const removePriceAdjustment = () => {
+    if (!currentBaustein) return;
+
+    setSelectedBausteine((prev) =>
+      prev.map((b) => {
+        if (b.bausteinId === currentBaustein) {
+          return {
+            bausteinId: b.bausteinId,
+          };
+        }
+        return b;
+      })
+    );
+
+    setIsPriceDialogOpen(false);
+    setCurrentBaustein(null);
+    setAdjustmentValue("");
+  };
+
+  const getDisplayPrice = (bausteinId: number): number => {
+    const selected = selectedBausteine.find((b) => b.bausteinId === bausteinId);
+    if (selected?.angepassterPreis !== undefined) {
+      return selected.angepassterPreis;
+    }
+    const baustein = bausteine.find((b) => b.id === bausteinId);
+    return baustein?.einzelpreis || 0;
   };
 
   if (bausteineLoading || laenderLoading || ansprechpartnerLoading) {
@@ -188,29 +296,49 @@ export default function AngebotErstellen() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {bausteine.map((baustein) => (
-                      <div key={baustein.id} className="flex items-start space-x-3">
-                        <Checkbox
-                          id={`baustein-${baustein.id}`}
-                          checked={selectedBausteine.includes(baustein.id)}
-                          onCheckedChange={() => toggleBaustein(baustein.id)}
-                        />
-                        <div className="flex-1">
-                          <Label
-                            htmlFor={`baustein-${baustein.id}`}
-                            className="font-medium cursor-pointer"
-                          >
-                            {baustein.name}
-                          </Label>
-                          <p className="text-sm text-gray-500">{baustein.beschreibung}</p>
-                          <p className="text-sm font-semibold text-blue-600">
-                            {baustein.einzelpreis === 0
-                              ? "Kostenlos"
-                              : `${baustein.einzelpreis.toLocaleString("de-DE")} EUR`}
-                          </p>
+                    {bausteine.map((baustein) => {
+                      const isSelected = selectedBausteine.some((b) => b.bausteinId === baustein.id);
+                      const displayPrice = getDisplayPrice(baustein.id);
+                      const hasAdjustment = selectedBausteine.find((b) => b.bausteinId === baustein.id)?.angepassterPreis !== undefined;
+
+                      return (
+                        <div key={baustein.id} className="flex items-start space-x-3 border-b pb-3">
+                          <Checkbox
+                            id={`baustein-${baustein.id}`}
+                            checked={isSelected}
+                            onCheckedChange={() => toggleBaustein(baustein.id)}
+                          />
+                          <div className="flex-1">
+                            <Label
+                              htmlFor={`baustein-${baustein.id}`}
+                              className="font-medium cursor-pointer"
+                            >
+                              {baustein.name}
+                            </Label>
+                            <p className="text-sm text-gray-500">{baustein.beschreibung}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className={`text-sm font-semibold ${hasAdjustment ? 'text-orange-600' : 'text-blue-600'}`}>
+                                {displayPrice === 0
+                                  ? "Kostenlos"
+                                  : `${displayPrice.toLocaleString("de-DE")} EUR`}
+                              </p>
+                              {isSelected && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openPriceDialog(baustein.id)}
+                                  className="h-6 px-2"
+                                >
+                                  <Settings className="h-3 w-3 mr-1" />
+                                  {hasAdjustment ? "Angepasst" : "Anpassen"}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -329,6 +457,54 @@ export default function AngebotErstellen() {
             </Button>
           </div>
         </form>
+
+        {/* Price Adjustment Dialog */}
+        <Dialog open={isPriceDialogOpen} onOpenChange={setIsPriceDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Preis anpassen</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <RadioGroup value={adjustmentType} onValueChange={(v) => setAdjustmentType(v as any)}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="direkt" id="adj-direkt" />
+                  <Label htmlFor="adj-direkt">Direkter Preis (EUR)</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="prozent" id="adj-prozent" />
+                  <Label htmlFor="adj-prozent">Prozentuale Anpassung (%)</Label>
+                </div>
+              </RadioGroup>
+
+              <div>
+                <Label htmlFor="adjustment-value">
+                  {adjustmentType === "direkt" ? "Neuer Preis (EUR)" : "Anpassung (%)"}
+                </Label>
+                <Input
+                  id="adjustment-value"
+                  type="number"
+                  value={adjustmentValue}
+                  onChange={(e) => setAdjustmentValue(e.target.value)}
+                  placeholder={adjustmentType === "direkt" ? "z.B. 2000" : "z.B. -10 oder +15"}
+                />
+                {adjustmentType === "prozent" && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Negative Werte für Rabatt, positive für Aufschlag
+                  </p>
+                )}
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={removePriceAdjustment}>
+                Zurücksetzen
+              </Button>
+              <Button variant="outline" onClick={() => setIsPriceDialogOpen(false)}>
+                Abbrechen
+              </Button>
+              <Button onClick={savePriceAdjustment}>Speichern</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

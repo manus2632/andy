@@ -139,15 +139,31 @@ export const appRouter = router({
           projekttitel: z.string().min(1),
           gueltigkeitsdatum: z.string(),
           ansprechpartnerId: z.number(),
-          bausteinIds: z.array(z.number()),
+          bausteine: z.array(
+            z.object({
+              bausteinId: z.number(),
+              angepassterPreis: z.number().optional(),
+              anpassungsTyp: z.enum(["direkt", "prozent"]).optional(),
+              anpassungsWert: z.number().optional(),
+            })
+          ),
           laenderIds: z.array(z.number()),
           lieferart: z.enum(["einmalig", "rahmenvertrag"]),
         })
       )
       .mutation(async ({ input, ctx }) => {
-        // Preisberechnung
-        const bausteineData = await db.getBausteineByIds(input.bausteinIds);
-        const preise = bausteineData.map((b) => b.einzelpreis);
+        // Preisberechnung mit angepassten Preisen
+        const bausteinIds = input.bausteine.map((b) => b.bausteinId);
+        const bausteineData = await db.getBausteineByIds(bausteinIds);
+        
+        const preise = input.bausteine.map((b) => {
+          if (b.angepassterPreis !== undefined) {
+            return b.angepassterPreis;
+          }
+          const baustein = bausteineData.find((bd) => bd.id === b.bausteinId);
+          return baustein?.einzelpreis || 0;
+        });
+        
         const anzahlLaender = input.laenderIds.length;
         const berechnung = calculatePrice(preise, anzahlLaender, input.lieferart);
 
@@ -168,7 +184,7 @@ export const appRouter = router({
         });
 
         // Bausteine und Länder verknüpfen
-        await db.addAngebotBausteine(angebotId, input.bausteinIds);
+        await db.addAngebotBausteine(angebotId, input.bausteine);
         await db.addAngebotLaender(angebotId, input.laenderIds);
 
         return { angebotId };

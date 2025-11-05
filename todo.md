@@ -29,3 +29,11 @@
 - [x] Frontend: Baustein erstellen Dialog
 - [x] Frontend: Baustein bearbeiten Dialog
 - [x] Frontend: Baustein duplizieren Funktion
+
+## Individuelle Preisanpassung
+
+- [x] Datenbankschema: Angepasste Preise pro Baustein im Angebot speichern
+- [x] Backend: Preisberechnung mit individuellen Baustein-Preisen
+- [x] Frontend: Preisanpassungs-Dialog für Bausteine
+- [x] Frontend: Anzeige angepasster Preise im Formular
+- [x] Angebot: Nur Endpreise anzeigen, keine Anpassungshinweise

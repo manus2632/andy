@@ -234,13 +234,24 @@ export async function createAngebot(angebot: InsertAngebot) {
   return result[0].insertId;
 }
 
-export async function addAngebotBausteine(angebotId: number, bausteinIds: number[]) {
+export async function addAngebotBausteine(
+  angebotId: number,
+  bausteine: Array<{
+    bausteinId: number;
+    angepassterPreis?: number;
+    anpassungsTyp?: "direkt" | "prozent";
+    anpassungsWert?: number;
+  }>
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const values: InsertAngebotBaustein[] = bausteinIds.map((bausteinId) => ({
+  const values: InsertAngebotBaustein[] = bausteine.map((b) => ({
     angebotId,
-    bausteinId,
+    bausteinId: b.bausteinId,
+    angepassterPreis: b.angepassterPreis ?? null,
+    anpassungsTyp: b.anpassungsTyp ?? null,
+    anpassungsWert: b.anpassungsWert ?? null,
   }));
 
   await db.insert(angebotBausteine).values(values);
