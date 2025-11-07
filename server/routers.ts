@@ -1,7 +1,8 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
+import * as llmService from "./llmService";
 import { z } from "zod";
 import * as db from "./db";
 import { calculatePrice } from "./calculator";
@@ -155,6 +156,21 @@ export const appRouter = router({
         // Preisberechnung mit angepassten Preisen
         const bausteinIds = input.bausteine.map((b) => b.bausteinId);
         const bausteineData = await db.getBausteineByIds(bausteinIds);
+        const laenderData = await db.getLaenderByIds(input.laenderIds);
+        
+        // LLM-Texte generieren
+        const llmKontext = {
+          kundenname: input.kundenname,
+          projekttitel: input.projekttitel,
+          bausteine: bausteineData.map((b) => b.name),
+          laender: laenderData.map((l) => l.name),
+          lieferart: input.lieferart,
+        };
+        
+        const [llmFirmenvorstellung, llmMethodik] = await Promise.all([
+          llmService.generiereFirmenvorstellung(llmKontext),
+          llmService.generiereMethodik(llmKontext),
+        ]);
         
         const preise = input.bausteine.map((b) => {
           if (b.angepassterPreis !== undefined) {
@@ -180,6 +196,9 @@ export const appRouter = router({
           gesamtpreis: berechnung.gesamtpreis,
           anzahlLaender: berechnung.anzahlLaender,
           status: "entwurf",
+          llmFirmenvorstellung,
+          llmMethodik,
+          llmKundenEinleitung: null,
           createdBy: ctx.user.id,
         });
 

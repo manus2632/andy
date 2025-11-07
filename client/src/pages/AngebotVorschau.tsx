@@ -69,23 +69,31 @@ export default function AngebotVorschau() {
           {/* Kapitel 1: Firmenvorstellung */}
           <section className="mb-8">
             <h3 className="text-lg font-bold mb-3">1 B+L Firmenvorstellung</h3>
-            <p className="text-sm leading-relaxed mb-3">
-              B+L hat Erfahrung aus hunderten von Produktstudien. Wir untersuchen seit 1994
-              kontinuierlich die Märkte für Bauprodukte in allen relevanten Weltmärkten. Durch
-              die Kombination von Methodensicherheit und Branchen- und Marktkenntnis erzielen
-              wir in kürzester Zeit abgesicherte Ergebnisse.
-            </p>
-            <p className="text-sm leading-relaxed mb-3">
-              Die Basis der Marktprognosen wird gebildet aus einer umfassenden Analyse der
-              Einflussfaktoren auf den Markt, kombiniert mit Erkenntnissen aus fortlaufenden
-              B+L Endverbraucher- und Zielgruppenbefragungen, die insbesondere Aufschluss über
-              Produkttrends und Renovierverhalten geben.
-            </p>
-            <p className="text-sm leading-relaxed">
-              In unserem Hauptsitz in Bonn arbeitet ein internationales Team von erfahrenen
-              Industrieanalysten. Weiterhin nutzen wir unser hausinternes Team von
-              muttersprachlichen Telefoninterviewern zum Zweck der Datenerhebung.
-            </p>
+            {angebot.llmFirmenvorstellung ? (
+              <div className="text-sm leading-relaxed whitespace-pre-line">
+                {angebot.llmFirmenvorstellung}
+              </div>
+            ) : (
+              <>
+                <p className="text-sm leading-relaxed mb-3">
+                  B+L hat Erfahrung aus hunderten von Produktstudien. Wir untersuchen seit 1994
+                  kontinuierlich die Märkte für Bauprodukte in allen relevanten Weltmärkten. Durch
+                  die Kombination von Methodensicherheit und Branchen- und Marktkenntnis erzielen
+                  wir in kürzester Zeit abgesicherte Ergebnisse.
+                </p>
+                <p className="text-sm leading-relaxed mb-3">
+                  Die Basis der Marktprognosen wird gebildet aus einer umfassenden Analyse der
+                  Einflussfaktoren auf den Markt, kombiniert mit Erkenntnissen aus fortlaufenden
+                  B+L Endverbraucher- und Zielgruppenbefragungen, die insbesondere Aufschluss über
+                  Produkttrends und Renovierverhalten geben.
+                </p>
+                <p className="text-sm leading-relaxed">
+                  In unserem Hauptsitz in Bonn arbeitet ein internationales Team von erfahrenen
+                  Industrieanalysten. Weiterhin nutzen wir unser hausinternes Team von
+                  muttersprachlichen Telefoninterviewern zum Zweck der Datenerhebung.
+                </p>
+              </>
+            )}
           </section>
 
           {/* Kapitel 2: Studieninhalte */}
@@ -119,12 +127,18 @@ export default function AngebotVorschau() {
           {/* Kapitel 4: Erhebungsmethode */}
           <section className="mb-8">
             <h3 className="text-lg font-bold mb-3">4 Erhebungsmethode</h3>
-            <p className="text-sm leading-relaxed mb-3">
-              Die Basis des Datengerüsts bilden Primärerhebungen in den Stufen Industrie,
-              Handel und Verarbeitung. Der ermittelte Gesamtmarkt wird abschließend mit
-              Fachexperten aus verschiedenen Bereichen diskutiert und abgestimmt. Durch den
-              triangulatorischen Ansatz werden weitgehend abgesicherte Ergebnisse erzielt.
-            </p>
+            {angebot.llmMethodik ? (
+              <div className="text-sm leading-relaxed whitespace-pre-line">
+                {angebot.llmMethodik}
+              </div>
+            ) : (
+              <p className="text-sm leading-relaxed mb-3">
+                Die Basis des Datengerüsts bilden Primärerhebungen in den Stufen Industrie,
+                Handel und Verarbeitung. Der ermittelte Gesamtmarkt wird abschließend mit
+                Fachexperten aus verschiedenen Bereichen diskutiert und abgestimmt. Durch den
+                triangulatorischen Ansatz werden weitgehend abgesicherte Ergebnisse erzielt.
+              </p>
+            )}
           </section>
 
           {/* Kapitel 5: Datenqualität */}

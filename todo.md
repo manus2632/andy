@@ -42,3 +42,17 @@
 
 - [x] Startseite entfernen, direkt zur Angebotserstellung weiterleiten
 - [x] Navigation anpassen
+
+## Vorschau-Problem
+
+- [x] Vorschau-Fehler analysieren und beheben
+
+## LLM-Integration für dynamische Texte
+
+- [x] Backend: LLM-Service mit austauschbarer Konfiguration
+- [x] Backend: Firmenvorstellung per LLM generieren
+- [x] Backend: Methodikbeschreibung per LLM generieren
+- [ ] Backend: Optional Web-Recherche für Kunden-News
+- [x] Backend: Texte bei Angebotserstellung generieren und speichern
+- [x] Frontend: Generierte Texte in Vorschau anzeigen
+- [x] Dokumentation: ENV-Variablen für IT-Kollegen

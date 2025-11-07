@@ -14,7 +14,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={AngebotErstellen} />
       <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
-      <Route path={"angebot/:id"} component={AngebotVorschau} />
+      <Route path={"/angebot/:id"} component={AngebotVorschau} />
       <Route path={"/bausteine"} component={BausteinBibliothek} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
