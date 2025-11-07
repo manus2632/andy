@@ -23,6 +23,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Loader2, Settings } from "lucide-react";
+import AngebotUpload from "@/components/AngebotUpload";
 
 interface BausteinMitPreis {
   bausteinId: number;
@@ -225,9 +226,18 @@ export default function AngebotErstellen() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-3xl font-bold">Neues Angebot erstellen</h1>
-          <Button variant="outline" onClick={() => setLocation("/bausteine")}>
-            Baustein-Bibliothek
-          </Button>
+          <div className="flex gap-2">
+            <AngebotUpload
+              onExtraktionErfolgreich={(data) => {
+                setKundenname(data.angebotsdaten.kundenname);
+                setProjekttitel(data.angebotsdaten.projekttitel);
+                toast.success(`${data.bausteine.length} Bausteine in Bibliothek gespeichert`);
+              }}
+            />
+            <Button variant="outline" onClick={() => setLocation("/bausteine")}>
+              Baustein-Bibliothek
+            </Button>
+          </div>
         </div>
 
 

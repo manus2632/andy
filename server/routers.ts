@@ -3,6 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import * as llmService from "./llmService";
+import * as dokumentExtraktion from "./dokumentExtraktion";
 import { z } from "zod";
 import * as db from "./db";
 import { calculatePrice } from "./calculator";
@@ -232,6 +233,32 @@ export const appRouter = router({
     list: protectedProcedure.query(async () => {
       return await db.getAllAngebote();
     }),
+  }),
+
+  upload: router({
+    analysiereAngebot: protectedProcedure
+      .input(
+        z.object({
+          dokumentText: z.string(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const extrahiert = await dokumentExtraktion.analysiereAngebotsDokument(
+          input.dokumentText
+        );
+
+        // Bausteine in Bibliothek speichern
+        for (const baustein of extrahiert.bausteine) {
+          await db.createBaustein({
+            name: baustein.name,
+            beschreibung: baustein.beschreibung,
+            einzelpreis: baustein.einzelpreis,
+            kategorie: baustein.kategorie,
+          });
+        }
+
+        return extrahiert;
+      }),
   }),
 });
 

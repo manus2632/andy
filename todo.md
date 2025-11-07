@@ -56,3 +56,13 @@
 - [x] Backend: Texte bei Angebotserstellung generieren und speichern
 - [x] Frontend: Generierte Texte in Vorschau anzeigen
 - [x] Dokumentation: ENV-Variablen für IT-Kollegen
+
+## Word-Dokument Upload & Extraktion
+
+- [x] Backend: Word-Dokument Upload-Endpoint
+- [x] Backend: Text-Extraktion aus .docx
+- [x] Backend: LLM-Analyse zur Extraktion von Bausteinen und Angebotsdaten
+- [x] Backend: Automatisches Speichern in Baustein-Bibliothek
+- [x] Frontend: Upload-Dialog auf Angebotserstellungs-Seite
+- [x] Frontend: Fortschrittsanzeige während Verarbeitung
+- [x] Frontend: Vorschau der extrahierten Daten
