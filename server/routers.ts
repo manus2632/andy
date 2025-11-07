@@ -233,6 +233,56 @@ export const appRouter = router({
     list: protectedProcedure.query(async () => {
       return await db.getAllAngebote();
     }),
+
+    duplizieren: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          neuerKundenname: z.string().optional(),
+          neuerProjekttitel: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        // Original-Angebot laden
+        const original = await db.getAngebotById(input.id);
+        if (!original) {
+          throw new Error("Angebot nicht gefunden");
+        }
+
+        const bausteine = await db.getAngebotBausteine(input.id);
+        const laender = await db.getAngebotLaender(input.id);
+
+        // Neues Angebot erstellen
+        const neuesAngebotId = await db.createAngebot({
+          kundenname: input.neuerKundenname || original.kundenname,
+          projekttitel: input.neuerProjekttitel || original.projekttitel,
+          gueltigkeitsdatum: original.gueltigkeitsdatum,
+          ansprechpartnerId: original.ansprechpartnerId,
+          lieferart: original.lieferart,
+          basispreis: original.basispreis,
+          rabattProzent: original.rabattProzent,
+          preisProLand: original.preisProLand,
+          gesamtpreis: original.gesamtpreis,
+          anzahlLaender: original.anzahlLaender,
+          status: "entwurf",
+          llmFirmenvorstellung: original.llmFirmenvorstellung,
+          llmMethodik: original.llmMethodik,
+          llmKundenEinleitung: original.llmKundenEinleitung,
+          createdBy: ctx.user.id,
+        });
+
+        // Bausteine und Länder kopieren
+        await db.addAngebotBausteine(
+          neuesAngebotId,
+          bausteine.map((b) => ({ bausteinId: b.id }))
+        );
+        await db.addAngebotLaender(
+          neuesAngebotId,
+          laender.map((l) => l.id)
+        );
+
+        return { angebotId: neuesAngebotId };
+      }),
   }),
 
   upload: router({

@@ -233,6 +233,9 @@ export default function AngebotErstellen() {
                 setProjekttitel(data.angebotsdaten.projekttitel);
               }}
             />
+            <Button variant="outline" onClick={() => setLocation("/archiv")}>
+              Archiv
+            </Button>
             <Button variant="outline" onClick={() => setLocation("/bausteine")}>
               Baustein-Bibliothek
             </Button>

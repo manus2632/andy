@@ -72,3 +72,14 @@
 - [x] Backend: Prüfung auf existierende Bausteine (Name + Einzelpreis)
 - [x] Backend: Überspringen von Duplikaten beim Upload
 - [x] Frontend: Feedback über übersprungene Duplikate
+
+## Angebots-Archiv
+
+- [x] Backend: Angebots-Liste mit allen gespeicherten Angeboten
+- [x] Backend: Angebot duplizieren mit neuem Namen
+- [ ] Backend: Angebot aktualisieren
+- [x] Frontend: Archiv-Seite mit Tabelle
+- [x] Frontend: Sortierung nach Datum, Projekttitel, Kunde, Ansprechpartner
+- [x] Frontend: Suchfunktion
+- [x] Frontend: Angebot bearbeiten (lädt Daten in Formular)
+- [ ] Frontend: Export-Funktion (PDF)
