@@ -66,3 +66,9 @@
 - [x] Frontend: Upload-Dialog auf Angebotserstellungs-Seite
 - [x] Frontend: Fortschrittsanzeige während Verarbeitung
 - [x] Frontend: Vorschau der extrahierten Daten
+
+## Deduplizierung
+
+- [x] Backend: Prüfung auf existierende Bausteine (Name + Einzelpreis)
+- [x] Backend: Überspringen von Duplikaten beim Upload
+- [x] Frontend: Feedback über übersprungene Duplikate

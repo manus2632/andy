@@ -231,7 +231,6 @@ export default function AngebotErstellen() {
               onExtraktionErfolgreich={(data) => {
                 setKundenname(data.angebotsdaten.kundenname);
                 setProjekttitel(data.angebotsdaten.projekttitel);
-                toast.success(`${data.bausteine.length} Bausteine in Bibliothek gespeichert`);
               }}
             />
             <Button variant="outline" onClick={() => setLocation("/bausteine")}>

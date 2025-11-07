@@ -30,7 +30,14 @@ export default function AngebotUpload({ onExtraktionErfolgreich }: AngebotUpload
 
   const analysiereMutation = trpc.upload.analysiereAngebot.useMutation({
     onSuccess: (data) => {
-      toast.success("Angebot erfolgreich analysiert");
+      const stats = (data as any).statistik;
+      if (stats) {
+        toast.success(
+          `${stats.hinzugefuegt} Bausteine hinzugefügt${stats.uebersprungen > 0 ? `, ${stats.uebersprungen} Duplikate übersprungen` : ""}`
+        );
+      } else {
+        toast.success("Angebot erfolgreich analysiert");
+      }
       onExtraktionErfolgreich(data);
       setIsOpen(false);
       setFile(null);

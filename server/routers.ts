@@ -247,17 +247,40 @@ export const appRouter = router({
           input.dokumentText
         );
 
-        // Bausteine in Bibliothek speichern
+        // Bausteine in Bibliothek speichern (mit Deduplizierung)
+        const existingBausteine = await db.getAllBausteine();
+        let hinzugefuegt = 0;
+        let uebersprungen = 0;
+
         for (const baustein of extrahiert.bausteine) {
-          await db.createBaustein({
-            name: baustein.name,
-            beschreibung: baustein.beschreibung,
-            einzelpreis: baustein.einzelpreis,
-            kategorie: baustein.kategorie,
-          });
+          // Prüfen ob Baustein bereits existiert (Name + Preis)
+          const exists = existingBausteine.some(
+            (existing) =>
+              existing.name.toLowerCase() === baustein.name.toLowerCase() &&
+              existing.einzelpreis === baustein.einzelpreis
+          );
+
+          if (!exists) {
+            await db.createBaustein({
+              name: baustein.name,
+              beschreibung: baustein.beschreibung,
+              einzelpreis: baustein.einzelpreis,
+              kategorie: baustein.kategorie,
+            });
+            hinzugefuegt++;
+          } else {
+            uebersprungen++;
+          }
         }
 
-        return extrahiert;
+        return {
+          ...extrahiert,
+          statistik: {
+            hinzugefuegt,
+            uebersprungen,
+            gesamt: extrahiert.bausteine.length,
+          },
+        };
       }),
   }),
 });
