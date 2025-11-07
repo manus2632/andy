@@ -83,3 +83,10 @@
 - [x] Frontend: Suchfunktion
 - [x] Frontend: Angebot bearbeiten (lädt Daten in Formular)
 - [ ] Frontend: Export-Funktion (PDF)
+
+## OpenWebUI Integration
+
+- [x] LLM-Service auf OpenWebUI umstellen
+- [x] API-Credentials als ENV-Variablen
+- [x] Alle LLM-Aufrufe auf neues System migrieren
+- [x] Dokumentation aktualisieren

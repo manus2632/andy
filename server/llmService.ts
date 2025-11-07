@@ -1,16 +1,17 @@
-import { invokeLLM } from "./_core/llm";
-
 /**
  * LLM Service für Andy Angebotsgenerator
  * 
- * Konfiguration über ENV-Variablen:
- * - Aktuell: Nutzt Manus Built-in LLM (GPT-4o-mini)
- * - Später: IT-Kollegen können auf eigenes Ollama umstellen
+ * Nutzt OpenWebUI API für LLM-Anfragen
  * 
- * Für Ollama-Integration:
- * 1. In server/_core/llm.ts die invokeLLM Funktion anpassen
- * 2. ENV-Variablen setzen: LLM_BASE_URL, LLM_MODEL_NAME
+ * Konfiguration über ENV-Variablen:
+ * - OPENWEBUI_API_URL: API-Endpunkt (default: https://maxproxy.bl2020.com/api/chat/completions)
+ * - OPENWEBUI_API_KEY: Bearer Token
+ * - OPENWEBUI_MODEL: Modellname (default: gpt-oss:120b)
  */
+
+const OPENWEBUI_API_URL = process.env.OPENWEBUI_API_URL || "https://maxproxy.bl2020.com/api/chat/completions";
+const OPENWEBUI_API_KEY = process.env.OPENWEBUI_API_KEY || "sk-bd621b0666474be1b054b3c5360b3cef";
+const OPENWEBUI_MODEL = process.env.OPENWEBUI_MODEL || "gpt-oss:120b";
 
 interface AngebotKontext {
   kundenname: string;
@@ -18,6 +19,32 @@ interface AngebotKontext {
   bausteine: string[];
   laender: string[];
   lieferart: "einmalig" | "rahmenvertrag";
+}
+
+/**
+ * Ruft OpenWebUI API auf
+ */
+async function callOpenWebUI(messages: Array<{ role: string; content: string }>): Promise<string> {
+  const response = await fetch(OPENWEBUI_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENWEBUI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: OPENWEBUI_MODEL,
+      messages,
+      temperature: 0.7,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenWebUI API error (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
 }
 
 /**
@@ -43,19 +70,15 @@ Kontext:
 
 Schreibe NUR den Text der Firmenvorstellung, ohne Überschriften oder zusätzliche Formatierung.`;
 
-  const response = await invokeLLM({
-    messages: [
-      {
-        role: "system",
-        content:
-          "Du bist ein professioneller Business-Texter mit Expertise in Marktanalysen und B2B-Kommunikation.",
-      },
-      { role: "user", content: prompt },
-    ],
-  });
+  const content = await callOpenWebUI([
+    {
+      role: "system",
+      content: "Du bist ein professioneller Business-Texter mit Expertise in Marktanalysen und B2B-Kommunikation.",
+    },
+    { role: "user", content: prompt },
+  ]);
 
-  const content = response.choices[0].message.content;
-  return typeof content === "string" ? content.trim() : "";
+  return content.trim();
 }
 
 /**
@@ -82,19 +105,15 @@ Die Methodikbeschreibung soll:
 
 Schreibe NUR den Methodiktext, ohne Überschriften oder zusätzliche Formatierung.`;
 
-  const response = await invokeLLM({
-    messages: [
-      {
-        role: "system",
-        content:
-          "Du bist ein Experte für Marktforschungsmethodik mit tiefem Verständnis für quantitative und qualitative Erhebungsmethoden.",
-      },
-      { role: "user", content: prompt },
-    ],
-  });
+  const content = await callOpenWebUI([
+    {
+      role: "system",
+      content: "Du bist ein Experte für Marktforschungsmethodik mit tiefem Verständnis für quantitative und qualitative Erhebungsmethoden.",
+    },
+    { role: "user", content: prompt },
+  ]);
 
-  const content = response.choices[0].message.content;
-  return typeof content === "string" ? content.trim() : "";
+  return content.trim();
 }
 
 /**
@@ -135,16 +154,13 @@ Die Einleitung soll:
 
 Schreibe NUR die Einleitung, ohne Überschriften.`;
 
-  const response = await invokeLLM({
-    messages: [
-      {
-        role: "system",
-        content: "Du bist ein professioneller Business-Texter mit Expertise in B2B-Kommunikation.",
-      },
-      { role: "user", content: prompt },
-    ],
-  });
+  const content = await callOpenWebUI([
+    {
+      role: "system",
+      content: "Du bist ein professioneller Business-Texter mit Expertise in B2B-Kommunikation.",
+    },
+    { role: "user", content: prompt },
+  ]);
 
-  const content = response.choices[0].message.content;
-  return typeof content === "string" ? content.trim() : null;
+  return content.trim();
 }

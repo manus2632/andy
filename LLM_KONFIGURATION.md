@@ -2,76 +2,103 @@
 
 ## Aktuelle Konfiguration
 
-Andy nutzt aktuell das **Manus Built-in LLM** (GPT-4o-mini) für die Generierung von Angebots-Texten.
+Andy nutzt **OpenWebUI** mit folgendem Setup:
 
-## Umstellung auf eigenes Ollama-Modell
+- **API-Endpunkt**: `https://maxproxy.bl2020.com/api/chat/completions`
+- **Modell**: `gpt-oss:120b`
+- **Authentifizierung**: Bearer Token
 
-Für die Nutzung eines intern gehosteten Ollama-Modells sind folgende Schritte erforderlich:
+## Umgebungsvariablen
 
-### 1. LLM-Service anpassen
-
-Datei: `server/_core/llm.ts`
-
-Die Funktion `invokeLLM` muss angepasst werden, um statt der Manus-API das eigene Ollama zu verwenden.
-
-**Beispiel-Implementation für Ollama:**
-
-```typescript
-import { ENV } from './env';
-
-export async function invokeLLM(params: {
-  messages: Array<{ role: string; content: string }>;
-}) {
-  const LLM_BASE_URL = process.env.LLM_BASE_URL || 'http://localhost:11434';
-  const LLM_MODEL = process.env.LLM_MODEL_NAME || 'llama3';
-
-  const response = await fetch(`${LLM_BASE_URL}/api/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: LLM_MODEL,
-      messages: params.messages,
-      stream: false,
-    }),
-  });
-
-  const data = await response.json();
-  
-  return {
-    choices: [{
-      message: {
-        content: data.message.content
-      }
-    }]
-  };
-}
-```
-
-### 2. Umgebungsvariablen setzen
-
-Fügen Sie folgende ENV-Variablen hinzu:
+Die LLM-Konfiguration erfolgt über folgende ENV-Variablen:
 
 ```bash
-LLM_BASE_URL=http://your-ollama-server:11434
-LLM_MODEL_NAME=gpt4o-mini  # oder llama3, mistral, etc.
+# OpenWebUI API-Endpunkt
+OPENWEBUI_API_URL=https://maxproxy.bl2020.com/api/chat/completions
+
+# API Bearer Token
+OPENWEBUI_API_KEY=sk-bd621b0666474be1b054b3c5360b3cef
+
+# Modellname
+OPENWEBUI_MODEL=gpt-oss:120b
 ```
 
-### 3. Keine weiteren Änderungen erforderlich
+## Konfiguration ändern
 
-Der restliche Code in `server/llmService.ts` funktioniert unverändert, da die Schnittstelle gleich bleibt.
+### Wechsel zu anderem OpenWebUI-Server
+
+1. ENV-Variablen anpassen:
+   ```bash
+   OPENWEBUI_API_URL=https://ihr-server.com/api/chat/completions
+   OPENWEBUI_API_KEY=ihr-api-key
+   OPENWEBUI_MODEL=ihr-modell
+   ```
+
+2. Server neu starten
+
+### Wechsel zu anderem LLM-Provider
+
+Um zu einem anderen OpenAI-kompatiblen Provider zu wechseln:
+
+1. ENV-Variablen setzen:
+   ```bash
+   OPENWEBUI_API_URL=http://ihr-server:11434/v1/chat/completions
+   OPENWEBUI_API_KEY=ihr-api-key
+   OPENWEBUI_MODEL=llama3
+   ```
+
+2. API-Kompatibilität prüfen: Der neue Endpunkt muss OpenAI-kompatibles Format unterstützen
+
+3. Server neu starten
+
+## Verwendete LLM-Funktionen
+
+Andy nutzt das LLM für:
+
+### 1. Firmenvorstellung generieren
+**Datei**: `server/llmService.ts` → `generiereFirmenvorstellung()`
+
+Erstellt individualisierte Firmenvorstellung basierend auf:
+- Kundenname
+- Projekttitel
+- Analysebereiche (Bausteine)
+- Länder
+
+### 2. Methodikbeschreibung generieren
+**Datei**: `server/llmService.ts` → `generiereMethodik()`
+
+Erstellt detaillierte Methodikbeschreibung basierend auf:
+- Projekttitel
+- Analysebereiche
+- Länder
+
+### 3. Word-Dokumente analysieren
+**Datei**: `server/dokumentExtraktion.ts` → `analysiereAngebotsDokument()`
+
+Extrahiert strukturierte Daten aus hochgeladenen Angeboten:
+- Bausteine (Name, Beschreibung, Preis, Kategorie)
+- Angebotsdaten (Kunde, Projekt, Länder)
+
+Nutzt JSON-Schema für strukturierte Ausgabe.
+
+## Wichtige Hinweise
+
+- **Keine Code-Änderungen nötig**: Nur ENV-Variablen anpassen
+- **API-Kompatibilität**: Neuer Endpunkt muss OpenAI-kompatibel sein
+- **JSON-Schema Support**: Für Dokument-Extraktion wird `response_format` mit JSON-Schema benötigt
+- **Modellleistung**: Modell sollte für Textgenerierung und strukturierte Ausgaben geeignet sein
+- **Fehlerbehandlung**: Bei API-Fehlern wird eine aussagekräftige Fehlermeldung ausgegeben
 
 ## Generierte Texte
 
-Andy generiert bei jeder Angebotserstellung automatisch:
+Bei jeder Angebotserstellung werden automatisch generiert:
 
-1. **Firmenvorstellung**: Individualisiert basierend auf Kunde, Projekt und Analysebereichen
-2. **Methodikbeschreibung**: Angepasst an die spezifischen Bausteine und Länder
+1. **Firmenvorstellung** (Feld: `llmFirmenvorstellung`)
+2. **Methodikbeschreibung** (Feld: `llmMethodik`)
 
-Die Texte werden in der Datenbank gespeichert (Felder: `llmFirmenvorstellung`, `llmMethodik`) und im Angebot angezeigt.
+Die Texte werden in der Datenbank gespeichert und im Angebot angezeigt.
 
 ## Zukünftige Erweiterungen
 
 - **Web-Recherche**: Funktion `sucheKundenNews()` in `server/llmService.ts` kann erweitert werden
-- **Kundenspezifische Einleitung**: Basierend auf aktuellen News über den Kunden
+- **Kundenspezifische Einleitung**: Basierend auf aktuellen News über den Kunden (Funktion `generiereKundenspezifischeEinleitung()`)

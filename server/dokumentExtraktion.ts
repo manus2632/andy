@@ -1,5 +1,37 @@
-import { invokeLLM } from "./_core/llm";
 import mammoth from "mammoth";
+
+const OPENWEBUI_API_URL = process.env.OPENWEBUI_API_URL || "https://maxproxy.bl2020.com/api/chat/completions";
+const OPENWEBUI_API_KEY = process.env.OPENWEBUI_API_KEY || "sk-bd621b0666474be1b054b3c5360b3cef";
+const OPENWEBUI_MODEL = process.env.OPENWEBUI_MODEL || "gpt-oss:120b";
+
+async function callOpenWebUI(messages: Array<{ role: string; content: string }>, responseFormat?: any): Promise<string> {
+  const body: any = {
+    model: OPENWEBUI_MODEL,
+    messages,
+    temperature: 0.3,
+  };
+
+  if (responseFormat) {
+    body.response_format = responseFormat;
+  }
+
+  const response = await fetch(OPENWEBUI_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${OPENWEBUI_API_KEY}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenWebUI API error (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
 
 interface ExtrahierteBausteine {
   bausteine: Array<{
@@ -69,8 +101,8 @@ Wichtig:
 - Wenn Informationen fehlen, lasse Felder leer oder nutze leere Arrays
 - Keine zusätzlichen Erklärungen, nur JSON`;
 
-  const response = await invokeLLM({
-    messages: [
+  const responseText = await callOpenWebUI(
+    [
       {
         role: "system",
         content:
@@ -78,7 +110,7 @@ Wichtig:
       },
       { role: "user", content: prompt },
     ],
-    response_format: {
+    {
       type: "json_schema",
       json_schema: {
         name: "angebots_extraktion",
@@ -118,14 +150,11 @@ Wichtig:
           additionalProperties: false,
         },
       },
-    },
-  });
-
-  const content = response.choices[0].message.content;
-  const jsonString = typeof content === "string" ? content : JSON.stringify(content);
+    }
+  );
 
   try {
-    const extracted = JSON.parse(jsonString);
+    const extracted = JSON.parse(responseText);
     return extracted as ExtrahierteBausteine;
   } catch (error) {
     throw new Error("Fehler beim Parsen der LLM-Antwort");
