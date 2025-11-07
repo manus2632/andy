@@ -167,16 +167,12 @@ export default function BausteinBibliothek() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="mb-6 flex justify-between items-center">
-          <Button variant="outline" onClick={() => setLocation("/")}>
-            ← Zur Angebotserstellung
-          </Button>
+          <h1 className="text-3xl font-bold">Baustein-Bibliothek</h1>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Neuer Baustein
           </Button>
         </div>
-
-        <h1 className="text-3xl font-bold mb-8">Baustein-Bibliothek</h1>
 
         {/* Suchleiste */}
         <div className="mb-6">

@@ -9,18 +9,21 @@ import AngebotErstellen from "./pages/AngebotErstellen";
 import AngebotVorschau from "./pages/AngebotVorschau";
 import BausteinBibliothek from "./pages/BausteinBibliothek";
 import AngebotArchiv from "./pages/AngebotArchiv";
+import { AppLayout } from "./components/AppLayout";
 
 function Router() {
   return (
-    <Switch>
-      <Route path={"/"} component={AngebotErstellen} />
-      <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
-      <Route path={"/angebot/:id"} component={AngebotVorschau} />
-      <Route path={"/bausteine"} component={BausteinBibliothek} />
-      <Route path={"/archiv"} component={AngebotArchiv} />
-      <Route path={"/404"} component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <AppLayout>
+      <Switch>
+        <Route path={"/"} component={AngebotErstellen} />
+        <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
+        <Route path={"/angebot/:id"} component={AngebotVorschau} />
+        <Route path={"/bausteine"} component={BausteinBibliothek} />
+        <Route path={"/archiv"} component={AngebotArchiv} />
+        <Route path={"/404"} component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </AppLayout>
   );
 }
 

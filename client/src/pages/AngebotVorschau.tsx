@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { VersionsHistorie } from "@/components/VersionsHistorie";
 
 export default function AngebotVorschau() {
   const [, params] = useRoute("/angebot/:id");
@@ -36,10 +37,8 @@ export default function AngebotVorschau() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-5xl">
-        <div className="mb-6 flex justify-between items-center">
-          <Button variant="outline" onClick={() => setLocation("/")}>
-            ← Neue Angebotserstellung
-          </Button>
+        <div className="mb-6 flex justify-end gap-2">
+          <VersionsHistorie angebotId={angebotId} />
           <Button onClick={() => window.print()}>PDF herunterladen</Button>
         </div>
 

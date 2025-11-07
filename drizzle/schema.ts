@@ -78,6 +78,51 @@ export const angebote = mysqlTable("angebote", {
 export type Angebot = typeof angebote.$inferSelect;
 export type InsertAngebot = typeof angebote.$inferInsert;
 
+/**
+ * Angebots-Versionen für Änderungshistorie
+ */
+export const angebotVersionen = mysqlTable("angebotVersionen", {
+  id: int("id").autoincrement().primaryKey(),
+  angebotId: int("angebotId").notNull(),
+  versionNummer: int("versionNummer").notNull(),
+  kundenname: varchar("kundenname", { length: 255 }).notNull(),
+  projekttitel: varchar("projekttitel", { length: 255 }).notNull(),
+  gueltigkeitsdatum: timestamp("gueltigkeitsdatum").notNull(),
+  ansprechpartnerId: int("ansprechpartnerId"),
+  lieferart: mysqlEnum("lieferart", ["einmalig", "rahmenvertrag"]).notNull(),
+  gesamtpreis: int("gesamtpreis").notNull(),
+  llmFirmenvorstellung: text("llmFirmenvorstellung"),
+  llmMethodik: text("llmMethodik"),
+  aenderungsgrund: text("aenderungsgrund"),
+  erstelltVon: varchar("erstelltVon", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AngebotVersion = typeof angebotVersionen.$inferSelect;
+export type InsertAngebotVersion = typeof angebotVersionen.$inferInsert;
+
+/**
+ * Bausteine einer Angebots-Version
+ */
+export const angebotVersionBausteine = mysqlTable("angebotVersionBausteine", {
+  id: int("id").autoincrement().primaryKey(),
+  versionId: int("versionId").notNull(),
+  bausteinId: int("bausteinId").notNull(),
+  anzahl: int("anzahl").notNull().default(1),
+  angepassterPreis: int("angepassterPreis"),
+  anpassungsTyp: mysqlEnum("anpassungsTyp", ["direkt", "prozent"]),
+  anpassungsWert: int("anpassungsWert"),
+});
+
+/**
+ * Länder einer Angebots-Version
+ */
+export const angebotVersionLaender = mysqlTable("angebotVersionLaender", {
+  id: int("id").autoincrement().primaryKey(),
+  versionId: int("versionId").notNull(),
+  landId: int("landId").notNull(),
+});
+
 export const angebotBausteine = mysqlTable("angebotBausteine", {
   id: int("id").autoincrement().primaryKey(),
   angebotId: int("angebotId").notNull(),

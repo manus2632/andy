@@ -134,9 +134,8 @@ export default function AngebotArchiv() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="mb-6 flex justify-between items-center">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold">Angebots-Archiv</h1>
-          <Button onClick={() => setLocation("/")}>Neues Angebot</Button>
         </div>
 
         {/* Suchleiste */}

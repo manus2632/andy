@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import * as llmService from "./llmService";
 import * as dokumentExtraktion from "./dokumentExtraktion";
+import * as versionierung from "./versionierung";
 import { z } from "zod";
 import * as db from "./db";
 import { calculatePrice } from "./calculator";
@@ -282,6 +283,61 @@ export const appRouter = router({
         );
 
         return { angebotId: neuesAngebotId };
+      }),
+
+    versionen: protectedProcedure
+      .input(z.object({ angebotId: z.number() }))
+      .query(async ({ input }) => {
+        return await versionierung.getVersionen(input.angebotId);
+      }),
+
+    versionDetails: protectedProcedure
+      .input(z.object({ versionId: z.number() }))
+      .query(async ({ input }) => {
+        return await versionierung.getVersionDetails(input.versionId);
+      }),
+
+    erstelleVersion: protectedProcedure
+      .input(
+        z.object({
+          angebotId: z.number(),
+          aenderungsgrund: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        // Aktuelles Angebot laden
+        const angebot = await db.getAngebotById(input.angebotId);
+        if (!angebot) {
+          throw new Error("Angebot nicht gefunden");
+        }
+
+        const bausteine = await db.getAngebotBausteine(input.angebotId);
+        const laender = await db.getAngebotLaender(input.angebotId);
+
+        // Version erstellen
+        const versionId = await versionierung.erstelleVersion({
+          angebotId: input.angebotId,
+          kundenname: angebot.kundenname,
+          projekttitel: angebot.projekttitel,
+          gueltigkeitsdatum: angebot.gueltigkeitsdatum,
+          ansprechpartnerId: angebot.ansprechpartnerId,
+          lieferart: angebot.lieferart,
+          gesamtpreis: angebot.gesamtpreis,
+          llmFirmenvorstellung: angebot.llmFirmenvorstellung,
+          llmMethodik: angebot.llmMethodik,
+          aenderungsgrund: input.aenderungsgrund,
+          erstelltVon: ctx.user.name || ctx.user.email || "Unbekannt",
+          bausteine: bausteine.map((b) => ({
+            bausteinId: b.id,
+            anzahl: 1,
+            angepassterPreis: b.angepassterPreis || undefined,
+            anpassungsTyp: b.anpassungsTyp || undefined,
+            anpassungsWert: b.anpassungsWert || undefined,
+          })),
+          laenderIds: laender.map((l) => l.id),
+        });
+
+        return { versionId };
       }),
   }),
 

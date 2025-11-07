@@ -90,3 +90,19 @@
 - [x] API-Credentials als ENV-Variablen
 - [x] Alle LLM-Aufrufe auf neues System migrieren
 - [x] Dokumentation aktualisieren
+
+## Sidebar-Navigation
+
+- [x] Sidebar-Layout-Komponente erstellen
+- [x] Navigation mit Icons (Angebote, Archiv, Bausteine)
+- [x] Aktiver Menüpunkt-Highlighting
+- [x] Responsive Sidebar (collapsible)
+
+## Angebots-Versionierung
+
+- [x] Datenbankschema: Versions-Tabelle
+- [x] Backend: Version erstellen bei Änderungen
+- [x] Backend: Versionshistorie abrufen
+- [x] Frontend: Versionshistorie anzeigen
+- [ ] Frontend: Ältere Version wiederherstellen (optional)
+- [ ] Frontend: Versionen vergleichen (optional)

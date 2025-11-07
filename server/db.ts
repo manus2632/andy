@@ -284,12 +284,18 @@ export async function getAngebotBausteine(angebotId: number) {
   const result = await db
     .select({
       baustein: bausteine,
+      angebotBaustein: angebotBausteine,
     })
     .from(angebotBausteine)
     .innerJoin(bausteine, eq(angebotBausteine.bausteinId, bausteine.id))
     .where(eq(angebotBausteine.angebotId, angebotId));
 
-  return result.map((r) => r.baustein);
+  return result.map((r) => ({
+    ...r.baustein,
+    angepassterPreis: r.angebotBaustein.angepassterPreis,
+    anpassungsTyp: r.angebotBaustein.anpassungsTyp,
+    anpassungsWert: r.angebotBaustein.anpassungsWert,
+  }));
 }
 
 export async function getAngebotLaender(angebotId: number) {
