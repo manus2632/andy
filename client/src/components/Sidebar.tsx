@@ -38,7 +38,7 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Header */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200">
         <div className="w-8 h-8 bg-black rounded flex items-center justify-center text-white font-bold text-sm">
-          A
+          B
         </div>
         <span className="font-semibold text-gray-900">{APP_TITLE}</span>
       </div>

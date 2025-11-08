@@ -129,3 +129,10 @@
 - [x] Frontend: Erweiterte Baustein-Eingabefelder (Beschreibung, Unterpunkte)
 - [x] Frontend: Anzeige detaillierter Bausteine im Angebot
 - [ ] LLM: Generierung detaillierter Bausteinbeschreibungen aus Vorlagen
+
+## Umbenennung zu "Bob"
+
+- [x] APP_TITLE in const.ts auf "Bob" ändern
+- [x] Schlichtes Text-Logo erstellen (SVG)
+- [x] Logo in const.ts referenzieren
+- [x] Alle "Andy"-Referenzen in Code ersetzen
