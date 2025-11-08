@@ -45,7 +45,7 @@ pdfRouter.get('/angebot/:id/pdf', async (req, res) => {
       .innerJoin(laender, eq(angebotLaender.landId, laender.id))
       .where(eq(angebotLaender.angebotId, angebotId));
 
-    // HTML generieren
+    // HTML generieren (LLM-Texte sind bereits im Angebot enthalten)
     const html = generiereAngebotHTML(angebot, angebotBausteineData, angebotLaenderData, ansprechpartnerData);
 
     // PDF generieren
@@ -177,7 +177,13 @@ function generiereAngebotHTML(
 </head>
 <body>
   <div class="header">
-    <h1>Angebot</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1 style="margin: 0; border: none;">Angebot</h1>
+      <div style="text-align: right;">
+        <div style="font-weight: 600; font-size: 1.2em;">B+L Marktdaten GmbH</div>
+        <div style="color: #666; font-size: 0.9em;">Marktforschung & Consulting</div>
+      </div>
+    </div>
     <div class="info-grid">
       <div class="info-label">Kunde:</div>
       <div>${angebot.kundenname}</div>
@@ -200,6 +206,16 @@ function generiereAngebotHTML(
       <div>${angebot.lieferart === 'einmalig' ? 'Einmalige Lieferung' : 'Rahmenvertrag'}</div>
     </div>
   </div>
+
+  ${angebot.llmFirmenvorstellung ? `
+  <h2>Über B+L Marktdaten</h2>
+  <div style="margin-bottom: 30px; white-space: pre-wrap;">${angebot.llmFirmenvorstellung}</div>
+  ` : ''}
+
+  ${angebot.llmKundenEinleitung ? `
+  <h2>Einleitung</h2>
+  <div style="margin-bottom: 30px; white-space: pre-wrap;">${angebot.llmKundenEinleitung}</div>
+  ` : ''}
 
   <h2>Leistungsumfang</h2>
   ${bausteineData.map((item, index) => {
@@ -251,6 +267,11 @@ function generiereAngebotHTML(
   <div class="gesamtpreis">
     Gesamtpreis: ${gesamtpreis} EUR
   </div>
+
+  ${angebot.llmMethodik ? `
+  <h2>Methodik</h2>
+  <div style="margin-top: 30px; white-space: pre-wrap;">${angebot.llmMethodik}</div>
+  ` : ''}
 
   <div class="footer">
     <p>Dieses Angebot wurde mit Bob - Angebotsgenerator erstellt.</p>

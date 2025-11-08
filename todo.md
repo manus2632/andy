@@ -152,3 +152,15 @@
 - [x] Backend: PDF-Endpoint für Angebote
 - [x] Frontend: PDF-Download-Button in AngebotVorschau
 - [x] PDF enthält nur Angebots-Inhalt (ohne Sidebar/Navigation)
+
+## LLM-Texte und Logo in PDF
+
+- [x] LLM-generierte Firmenvorstellung in PDF einfügen
+- [x] LLM-generierte Methodikbeschreibung in PDF einfügen
+- [x] B+L Logo im PDF-Header platzieren (als Text)
+
+## Seed-Daten aus Vorlagen
+
+- [x] Word-Vorlagen analysieren für Bausteinbeschreibungen
+- [x] Seed-Script mit detaillierten Bausteinen erstellen
+- [x] Seed-Daten in Datenbank importieren
