@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
@@ -28,6 +29,10 @@ export default function BausteinBibliothek() {
   const [formData, setFormData] = useState({
     name: "",
     beschreibung: "",
+    langbeschreibung: "",
+    lieferumfang: "",
+    unterpunkte: "",
+    methodik: "",
     einzelpreis: 0,
     kategorie: "",
     reihenfolge: 0,
@@ -37,12 +42,10 @@ export default function BausteinBibliothek() {
 
   const utils = trpc.useUtils();
 
-  // Queries
-  const { data: bausteine = [], isLoading } = trpc.bausteine.search.useQuery({
+  const { data: bausteine, isLoading } = trpc.bausteine.search.useQuery({
     searchTerm,
   });
 
-  // Mutations
   const createMutation = trpc.bausteine.create.useMutation({
     onSuccess: () => {
       toast.success("Baustein erstellt");
@@ -95,6 +98,10 @@ export default function BausteinBibliothek() {
     setFormData({
       name: "",
       beschreibung: "",
+      langbeschreibung: "",
+      lieferumfang: "",
+      unterpunkte: "",
+      methodik: "",
       einzelpreis: 0,
       kategorie: "",
       reihenfolge: 0,
@@ -114,6 +121,10 @@ export default function BausteinBibliothek() {
     setFormData({
       name: baustein.name,
       beschreibung: baustein.beschreibung || "",
+      langbeschreibung: baustein.langbeschreibung || "",
+      lieferumfang: baustein.lieferumfang || "",
+      unterpunkte: baustein.unterpunkte || "",
+      methodik: baustein.methodik || "",
       einzelpreis: baustein.einzelpreis,
       kategorie: baustein.kategorie || "",
       reihenfolge: baustein.reihenfolge || 0,
@@ -150,36 +161,28 @@ export default function BausteinBibliothek() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Möchten Sie diesen Baustein wirklich löschen?")) {
+    if (confirm("Baustein wirklich löschen?")) {
       deleteMutation.mutate({ id });
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-3xl font-bold">Baustein-Bibliothek</h1>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="h-4 w-4 mr-2" />
             Neuer Baustein
           </Button>
         </div>
 
-        {/* Suchleiste */}
+        {/* Suchfeld */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Bausteine durchsuchen..."
+              placeholder="Suche nach Name, Beschreibung oder Kategorie..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -187,71 +190,68 @@ export default function BausteinBibliothek() {
           </div>
         </div>
 
-        {/* Bausteine Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bausteine.map((baustein) => (
-            <Card key={baustein.id} className={!baustein.aktiv ? "opacity-50" : ""}>
-              <CardHeader>
-                <CardTitle className="text-lg flex justify-between items-start">
-                  <span>{baustein.name}</span>
-                  {!baustein.aktiv && (
-                    <span className="text-xs bg-gray-200 px-2 py-1 rounded">Inaktiv</span>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4 min-h-[3rem]">
-                  {baustein.beschreibung || "Keine Beschreibung"}
-                </p>
-                <div className="mb-4">
-                  <p className="text-2xl font-bold text-blue-600">
-                    {baustein.einzelpreis === 0
-                      ? "Kostenlos"
-                      : `${baustein.einzelpreis.toLocaleString("de-DE")} EUR`}
-                  </p>
-                  {baustein.kategorie && (
-                    <p className="text-xs text-gray-500 mt-1">Kategorie: {baustein.kategorie}</p>
-                  )}
+        {/* Bausteine Liste */}
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          </div>
+        ) : bausteine && bausteine.length > 0 ? (
+          <div className="grid gap-4">
+            {bausteine.map((baustein) => (
+              <Card key={baustein.id} className="p-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold mb-2">{baustein.name}</h3>
+                    {baustein.beschreibung && (
+                      <p className="text-gray-600 mb-2">{baustein.beschreibung}</p>
+                    )}
+                    {baustein.kategorie && (
+                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                        {baustein.kategorie}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="text-lg font-bold text-blue-600">
+                      {baustein.einzelpreis.toLocaleString("de-DE")} EUR
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(baustein)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDuplicate(baustein)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(baustein.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(baustein)}
-                    className="flex-1"
-                  >
-                    <Edit className="h-4 w-4 mr-1" />
-                    Bearbeiten
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDuplicate(baustein)}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(baustein.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {bausteine.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Keine Bausteine gefunden</p>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-gray-500">
+            Keine Bausteine gefunden
           </div>
         )}
 
         {/* Create Dialog */}
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Neuen Baustein erstellen</DialogTitle>
             </DialogHeader>
@@ -265,11 +265,53 @@ export default function BausteinBibliothek() {
                 />
               </div>
               <div>
-                <Label htmlFor="create-beschreibung">Beschreibung</Label>
-                <Input
+                <Label htmlFor="create-beschreibung">Kurzbeschreibung</Label>
+                <Textarea
                   id="create-beschreibung"
                   value={formData.beschreibung}
                   onChange={(e) => setFormData({ ...formData, beschreibung: e.target.value })}
+                  rows={2}
+                  placeholder="1-2 Sätze Zusammenfassung"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-langbeschreibung">Detaillierte Beschreibung</Label>
+                <Textarea
+                  id="create-langbeschreibung"
+                  value={formData.langbeschreibung}
+                  onChange={(e) => setFormData({ ...formData, langbeschreibung: e.target.value })}
+                  rows={6}
+                  placeholder="Mehrere Absätze mit Details zum Baustein"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-lieferumfang">Lieferumfang</Label>
+                <Textarea
+                  id="create-lieferumfang"
+                  value={formData.lieferumfang}
+                  onChange={(e) => setFormData({ ...formData, lieferumfang: e.target.value })}
+                  rows={4}
+                  placeholder="Ein Punkt pro Zeile, z.B.&#10;Excel-Tabellen mit Rohdaten&#10;PDF-Report mit Grafiken&#10;Präsentation der Ergebnisse"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-unterpunkte">Unterpunkte / Inhalte</Label>
+                <Textarea
+                  id="create-unterpunkte"
+                  value={formData.unterpunkte}
+                  onChange={(e) => setFormData({ ...formData, unterpunkte: e.target.value })}
+                  rows={6}
+                  placeholder="Hierarchische Struktur, z.B.&#10;■ Hauptpunkt 1&#10;  o Unterpunkt 1.1&#10;  o Unterpunkt 1.2&#10;■ Hauptpunkt 2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-methodik">Methodik / Erhebungsmethode</Label>
+                <Textarea
+                  id="create-methodik"
+                  value={formData.methodik}
+                  onChange={(e) => setFormData({ ...formData, methodik: e.target.value })}
+                  rows={4}
+                  placeholder="Beschreibung der Datenerhebung und Analysemethoden"
                 />
               </div>
               <div>
@@ -289,6 +331,18 @@ export default function BausteinBibliothek() {
                   id="create-kategorie"
                   value={formData.kategorie}
                   onChange={(e) => setFormData({ ...formData, kategorie: e.target.value })}
+                  placeholder="z.B. Marktanalyse, Distribution, Produktentwicklung"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-reihenfolge">Reihenfolge</Label>
+                <Input
+                  id="create-reihenfolge"
+                  type="number"
+                  value={formData.reihenfolge}
+                  onChange={(e) =>
+                    setFormData({ ...formData, reihenfolge: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -312,7 +366,7 @@ export default function BausteinBibliothek() {
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Baustein bearbeiten</DialogTitle>
             </DialogHeader>
@@ -326,11 +380,53 @@ export default function BausteinBibliothek() {
                 />
               </div>
               <div>
-                <Label htmlFor="edit-beschreibung">Beschreibung</Label>
-                <Input
+                <Label htmlFor="edit-beschreibung">Kurzbeschreibung</Label>
+                <Textarea
                   id="edit-beschreibung"
                   value={formData.beschreibung}
                   onChange={(e) => setFormData({ ...formData, beschreibung: e.target.value })}
+                  rows={2}
+                  placeholder="1-2 Sätze Zusammenfassung"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-langbeschreibung">Detaillierte Beschreibung</Label>
+                <Textarea
+                  id="edit-langbeschreibung"
+                  value={formData.langbeschreibung}
+                  onChange={(e) => setFormData({ ...formData, langbeschreibung: e.target.value })}
+                  rows={6}
+                  placeholder="Mehrere Absätze mit Details zum Baustein"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-lieferumfang">Lieferumfang</Label>
+                <Textarea
+                  id="edit-lieferumfang"
+                  value={formData.lieferumfang}
+                  onChange={(e) => setFormData({ ...formData, lieferumfang: e.target.value })}
+                  rows={4}
+                  placeholder="Ein Punkt pro Zeile"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-unterpunkte">Unterpunkte / Inhalte</Label>
+                <Textarea
+                  id="edit-unterpunkte"
+                  value={formData.unterpunkte}
+                  onChange={(e) => setFormData({ ...formData, unterpunkte: e.target.value })}
+                  rows={6}
+                  placeholder="Hierarchische Struktur"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-methodik">Methodik / Erhebungsmethode</Label>
+                <Textarea
+                  id="edit-methodik"
+                  value={formData.methodik}
+                  onChange={(e) => setFormData({ ...formData, methodik: e.target.value })}
+                  rows={4}
+                  placeholder="Beschreibung der Datenerhebung"
                 />
               </div>
               <div>
@@ -350,6 +446,17 @@ export default function BausteinBibliothek() {
                   id="edit-kategorie"
                   value={formData.kategorie}
                   onChange={(e) => setFormData({ ...formData, kategorie: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-reihenfolge">Reihenfolge</Label>
+                <Input
+                  id="edit-reihenfolge"
+                  type="number"
+                  value={formData.reihenfolge}
+                  onChange={(e) =>
+                    setFormData({ ...formData, reihenfolge: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>

@@ -126,13 +126,47 @@ export default function AngebotVorschau() {
             <p className="text-sm leading-relaxed mb-4">
               Die Studie umfasst folgende Bausteine:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-sm">
-              {bausteine.map((baustein) => (
-                <li key={baustein.id}>
-                  <strong>{baustein.name}:</strong> {baustein.beschreibung}
-                </li>
-              ))}
-            </ul>
+            {bausteine.map((baustein, index) => (
+              <div key={baustein.id} className="mb-6">
+                <h4 className="text-base font-bold mb-2">
+                  2.{index + 1} {baustein.name}
+                </h4>
+                
+                {/* Langbeschreibung */}
+                {baustein.langbeschreibung && (
+                  <div className="text-sm leading-relaxed mb-3 whitespace-pre-line">
+                    {baustein.langbeschreibung}
+                  </div>
+                )}
+                
+                {/* Unterpunkte */}
+                {baustein.unterpunkte && (
+                  <div className="text-sm leading-relaxed mb-3 whitespace-pre-line">
+                    {baustein.unterpunkte}
+                  </div>
+                )}
+                
+                {/* Lieferumfang */}
+                {baustein.lieferumfang && (
+                  <div className="mb-3">
+                    <p className="text-sm font-semibold mb-1">Lieferumfang:</p>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      {baustein.lieferumfang.split('\n').filter(l => l.trim()).map((item, i) => (
+                        <li key={i}>{item.trim()}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {/* Methodik (falls baustein-spezifisch) */}
+                {baustein.methodik && (
+                  <div className="text-sm leading-relaxed mb-3">
+                    <p className="font-semibold mb-1">Methodik:</p>
+                    <div className="whitespace-pre-line">{baustein.methodik}</div>
+                  </div>
+                )}
+              </div>
+            ))}
           </section>
 
           {/* Kapitel 3: Länderübersicht */}

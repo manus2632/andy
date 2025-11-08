@@ -120,3 +120,12 @@
 - [x] Frontend: "Bearbeiten"-Button im Archiv
 - [x] Frontend: Formular mit vorausgefüllten Daten
 - [x] Frontend: Update statt Create bei Bearbeitung
+
+## Erweiterte Bausteinstruktur
+
+- [x] Datenbankschema: Zusätzliche Felder für detaillierte Bausteinbeschreibung
+- [x] Datenbankschema: Unterpunkte/Lieferumfang pro Baustein
+- [x] Backend: CRUD für erweiterte Bausteinfelder
+- [x] Frontend: Erweiterte Baustein-Eingabefelder (Beschreibung, Unterpunkte)
+- [x] Frontend: Anzeige detaillierter Bausteine im Angebot
+- [ ] LLM: Generierung detaillierter Bausteinbeschreibungen aus Vorlagen

@@ -18,7 +18,11 @@ export type InsertUser = typeof users.$inferInsert;
 export const bausteine = mysqlTable("bausteine", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 200 }).notNull(),
-  beschreibung: text("beschreibung"),
+  beschreibung: text("beschreibung"), // Kurzbeschreibung (1-2 Sätze)
+  langbeschreibung: text("langbeschreibung"), // Detaillierte Beschreibung (mehrere Absätze)
+  lieferumfang: text("lieferumfang"), // JSON Array: ["Excel-Tabellen", "PDF-Report", ...]
+  unterpunkte: text("unterpunkte"), // JSON hierarchische Struktur
+  methodik: text("methodik"), // Beschreibung der Erhebungsmethode
   einzelpreis: int("einzelpreis").notNull(), // Preis in EUR
   kategorie: varchar("kategorie", { length: 100 }),
   reihenfolge: int("reihenfolge").default(0),

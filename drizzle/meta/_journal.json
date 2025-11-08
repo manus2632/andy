@@ -43,6 +43,13 @@
       "when": 1762579822154,
       "tag": "0005_wet_hitman",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1762581344917,
+      "tag": "0006_wild_wallop",
+      "breakpoints": true
     }
   ]
 }
