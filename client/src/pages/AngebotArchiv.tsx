@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Loader2, Eye, Copy, ArrowUpDown, Search } from "lucide-react";
+import { Loader2, Eye, Copy, ArrowUpDown, Search, Edit } from "lucide-react";
 import { format } from "date-fns";
 
 type SortField = "createdAt" | "projekttitel" | "kundenname" | "ansprechpartner";
@@ -210,18 +210,20 @@ export default function AngebotArchiv() {
                         className={`px-2 py-1 rounded text-xs ${
                           angebot.status === "entwurf"
                             ? "bg-gray-100 text-gray-800"
-                            : angebot.status === "versendet"
+                            : angebot.status === "fertig"
                               ? "bg-blue-100 text-blue-800"
-                              : angebot.status === "angenommen"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
+                              : angebot.status === "gesendet"
+                                ? "bg-purple-100 text-purple-800"
+                                : angebot.status === "angenommen"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
                         }`}
                       >
                         {angebot.status}
                       </span>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                    <TableCell>
+                      <div className="flex gap-2">
                         <Button
                           variant="outline"
                           size="sm"
@@ -229,6 +231,14 @@ export default function AngebotArchiv() {
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           Ansehen
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/?edit=${angebot.id}`)}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Bearbeiten
                         </Button>
                         <Button
                           variant="outline"
@@ -245,8 +255,7 @@ export default function AngebotArchiv() {
                           Duplizieren
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </TableCell>                  </TableRow>
                 ))
               )}
             </TableBody>

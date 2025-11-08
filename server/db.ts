@@ -318,3 +318,50 @@ export async function getAllAngebote() {
   if (!db) return [];
   return await db.select().from(angebote);
 }
+
+export async function updateAngebotStatus(
+  id: number,
+  status: "entwurf" | "fertig" | "gesendet" | "angenommen" | "abgelehnt"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(angebote).set({ status }).where(eq(angebote.id, id));
+}
+
+export async function updateAngebot(
+  id: number,
+  data: {
+    kundenname: string;
+    projekttitel: string;
+    gueltigkeitsdatum: Date;
+    ansprechpartnerId: number;
+    lieferart: "einmalig" | "rahmenvertrag";
+    basispreis: number;
+    rabattProzent: number;
+    preisProLand: number;
+    gesamtpreis: number;
+    anzahlLaender: number;
+    llmFirmenvorstellung: string | null;
+    llmMethodik: string | null;
+  }
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(angebote).set(data).where(eq(angebote.id, id));
+}
+
+export async function deleteAngebotBausteine(angebotId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(angebotBausteine).where(eq(angebotBausteine.angebotId, angebotId));
+}
+
+export async function deleteAngebotLaender(angebotId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(angebotLaender).where(eq(angebotLaender.angebotId, angebotId));
+}

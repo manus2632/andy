@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,7 +33,12 @@ interface BausteinMitPreis {
 }
 
 export default function AngebotErstellen() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  
+  // Edit-Modus erkennen
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const editId = urlParams.get('edit') ? parseInt(urlParams.get('edit')!) : null;
+  const isEditMode = editId !== null;
 
   // Form state
   const [kundenname, setKundenname] = useState("");
@@ -43,6 +48,7 @@ export default function AngebotErstellen() {
   const [selectedBausteine, setSelectedBausteine] = useState<BausteinMitPreis[]>([]);
   const [selectedLaender, setSelectedLaender] = useState<number[]>([]);
   const [lieferart, setLieferart] = useState<"einmalig" | "rahmenvertrag">("einmalig");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Price adjustment dialog
   const [isPriceDialogOpen, setIsPriceDialogOpen] = useState(false);
@@ -74,11 +80,50 @@ export default function AngebotErstellen() {
     return calculateMutation.data;
   }, [selectedBausteine, selectedLaender, lieferart]);
 
+  // Angebot-Daten laden im Edit-Modus
+  const { data: editData } = trpc.angebot.getById.useQuery(
+    { id: editId! },
+    { enabled: isEditMode && !isDataLoaded }
+  );
+
+  useEffect(() => {
+    if (editData && !isDataLoaded) {
+      setKundenname(editData.angebot.kundenname);
+      setProjekttitel(editData.angebot.projekttitel);
+      setGueltigkeitsdatum(
+        new Date(editData.angebot.gueltigkeitsdatum).toISOString().split('T')[0]
+      );
+      setAnsprechpartnerId(editData.angebot.ansprechpartnerId.toString());
+      setLieferart(editData.angebot.lieferart);
+      setSelectedLaender(editData.laender.map((l) => l.id));
+      setSelectedBausteine(
+        editData.bausteine.map((b) => ({
+          bausteinId: b.id,
+          angepassterPreis: b.angepassterPreis || undefined,
+          anpassungsTyp: b.anpassungsTyp || undefined,
+          anpassungsWert: b.anpassungsWert || undefined,
+        }))
+      );
+      setIsDataLoaded(true);
+    }
+  }, [editData, isDataLoaded]);
+
   // Create angebot
   const createMutation = trpc.angebot.create.useMutation({
     onSuccess: (data) => {
       toast.success("Angebot erfolgreich erstellt");
       setLocation(`/angebot/${data.angebotId}`);
+    },
+    onError: (error) => {
+      toast.error(`Fehler: ${error.message}`);
+    },
+  });
+
+  // Update angebot
+  const updateMutation = trpc.angebot.update.useMutation({
+    onSuccess: () => {
+      toast.success("Angebot erfolgreich aktualisiert");
+      setLocation(`/angebot/${editId}`);
     },
     onError: (error) => {
       toast.error(`Fehler: ${error.message}`);
@@ -103,15 +148,30 @@ export default function AngebotErstellen() {
       return;
     }
 
-    createMutation.mutate({
-      kundenname,
-      projekttitel,
-      gueltigkeitsdatum,
-      ansprechpartnerId: parseInt(ansprechpartnerId),
-      bausteine: selectedBausteine,
-      laenderIds: selectedLaender,
-      lieferart,
-    });
+    if (isEditMode) {
+      updateMutation.mutate({
+        id: editId!,
+        kundenname,
+        projekttitel,
+        gueltigkeitsdatum,
+        ansprechpartnerId: parseInt(ansprechpartnerId),
+        bausteine: selectedBausteine,
+        laenderIds: selectedLaender,
+        lieferart,
+        erstelleVersion: true,
+        aenderungsgrund: "Manuelle Bearbeitung",
+      });
+    } else {
+      createMutation.mutate({
+        kundenname,
+        projekttitel,
+        gueltigkeitsdatum,
+        ansprechpartnerId: parseInt(ansprechpartnerId),
+        bausteine: selectedBausteine,
+        laenderIds: selectedLaender,
+        lieferart,
+      });
+    }
   };
 
   const toggleBaustein = (id: number) => {
@@ -225,7 +285,9 @@ export default function AngebotErstellen() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Neues Angebot erstellen</h1>
+          <h1 className="text-3xl font-bold">
+            {isEditMode ? "Angebot bearbeiten" : "Neues Angebot erstellen"}
+          </h1>
           <AngebotUpload
             onExtraktionErfolgreich={(data) => {
               setKundenname(data.angebotsdaten.kundenname);

@@ -77,7 +77,7 @@
 
 - [x] Backend: Angebots-Liste mit allen gespeicherten Angeboten
 - [x] Backend: Angebot duplizieren mit neuem Namen
-- [ ] Backend: Angebot aktualisieren
+- [x] Backend: Angebot aktualisieren
 - [x] Frontend: Archiv-Seite mit Tabelle
 - [x] Frontend: Sortierung nach Datum, Projekttitel, Kunde, Ansprechpartner
 - [x] Frontend: Suchfunktion
@@ -106,3 +106,17 @@
 - [x] Frontend: Versionshistorie anzeigen
 - [ ] Frontend: Ältere Version wiederherstellen (optional)
 - [ ] Frontend: Versionen vergleichen (optional)
+
+## Status-Workflow
+
+- [x] Backend: Status auf "fertig" setzen
+- [x] Frontend: "Angebot abschließen"-Button in Vorschau
+- [x] Frontend: Status-Badge in Archiv
+
+## Angebots-Bearbeitung
+
+- [x] Backend: Angebot aktualisieren
+- [x] Backend: Automatische Versionierung bei Änderungen
+- [x] Frontend: "Bearbeiten"-Button im Archiv
+- [x] Frontend: Formular mit vorausgefüllten Daten
+- [x] Frontend: Update statt Create bei Bearbeitung

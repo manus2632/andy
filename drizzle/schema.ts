@@ -64,7 +64,7 @@ export const angebote = mysqlTable("angebote", {
   preisProLand: int("preisProLand").notNull(),
   gesamtpreis: int("gesamtpreis").notNull(),
   anzahlLaender: int("anzahlLaender").notNull(),
-  status: mysqlEnum("status", ["entwurf", "versendet", "angenommen", "abgelehnt"])
+  status: mysqlEnum("status", ["entwurf", "fertig", "gesendet", "angenommen", "abgelehnt"])
     .default("entwurf")
     .notNull(),
   llmFirmenvorstellung: text("llmFirmenvorstellung"),

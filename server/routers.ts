@@ -339,6 +339,127 @@ export const appRouter = router({
 
         return { versionId };
       }),
+
+    updateStatus: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          status: z.enum(["entwurf", "fertig", "gesendet", "angenommen", "abgelehnt"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await db.updateAngebotStatus(input.id, input.status);
+        return { success: true };
+      }),
+
+    update: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          kundenname: z.string().min(1),
+          projekttitel: z.string().min(1),
+          gueltigkeitsdatum: z.string(),
+          ansprechpartnerId: z.number(),
+          bausteine: z.array(
+            z.object({
+              bausteinId: z.number(),
+              angepassterPreis: z.number().optional(),
+              anpassungsTyp: z.enum(["direkt", "prozent"]).optional(),
+              anpassungsWert: z.number().optional(),
+            })
+          ),
+          laenderIds: z.array(z.number()),
+          lieferart: z.enum(["einmalig", "rahmenvertrag"]),
+          erstelleVersion: z.boolean().optional(),
+          aenderungsgrund: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        // Version erstellen falls gewünscht
+        if (input.erstelleVersion) {
+          const angebot = await db.getAngebotById(input.id);
+          if (angebot) {
+            const bausteine = await db.getAngebotBausteine(input.id);
+            const laender = await db.getAngebotLaender(input.id);
+
+            await versionierung.erstelleVersion({
+              angebotId: input.id,
+              kundenname: angebot.kundenname,
+              projekttitel: angebot.projekttitel,
+              gueltigkeitsdatum: angebot.gueltigkeitsdatum,
+              ansprechpartnerId: angebot.ansprechpartnerId,
+              lieferart: angebot.lieferart,
+              gesamtpreis: angebot.gesamtpreis,
+              llmFirmenvorstellung: angebot.llmFirmenvorstellung,
+              llmMethodik: angebot.llmMethodik,
+              aenderungsgrund: input.aenderungsgrund || "Vor Bearbeitung",
+              erstelltVon: ctx.user.name || ctx.user.email || "Unbekannt",
+              bausteine: bausteine.map((b) => ({
+                bausteinId: b.id,
+                anzahl: 1,
+                angepassterPreis: b.angepassterPreis || undefined,
+                anpassungsTyp: b.anpassungsTyp || undefined,
+                anpassungsWert: b.anpassungsWert || undefined,
+              })),
+              laenderIds: laender.map((l) => l.id),
+            });
+          }
+        }
+
+        // Preisberechnung
+        const bausteinIds = input.bausteine.map((b) => b.bausteinId);
+        const bausteineData = await db.getBausteineByIds(bausteinIds);
+        const laenderData = await db.getLaenderByIds(input.laenderIds);
+
+        // LLM-Texte neu generieren
+        const llmKontext = {
+          kundenname: input.kundenname,
+          projekttitel: input.projekttitel,
+          bausteine: bausteineData.map((b) => b.name),
+          laender: laenderData.map((l) => l.name),
+          lieferart: input.lieferart,
+        };
+
+        const [llmFirmenvorstellung, llmMethodik] = await Promise.all([
+          llmService.generiereFirmenvorstellung(llmKontext),
+          llmService.generiereMethodik(llmKontext),
+        ]);
+
+        const preise = input.bausteine.map((b) => {
+          if (b.angepassterPreis !== undefined) {
+            return b.angepassterPreis;
+          }
+          const baustein = bausteineData.find((bd) => bd.id === b.bausteinId);
+          return baustein?.einzelpreis || 0;
+        });
+
+        const anzahlLaender = input.laenderIds.length;
+        const berechnung = calculatePrice(preise, anzahlLaender, input.lieferart);
+
+        // Angebot aktualisieren
+        await db.updateAngebot(input.id, {
+          kundenname: input.kundenname,
+          projekttitel: input.projekttitel,
+          gueltigkeitsdatum: new Date(input.gueltigkeitsdatum),
+          ansprechpartnerId: input.ansprechpartnerId,
+          lieferart: input.lieferart,
+          basispreis: berechnung.basispreis,
+          rabattProzent: berechnung.rabattProzent,
+          preisProLand: berechnung.preisProLand,
+          gesamtpreis: berechnung.gesamtpreis,
+          anzahlLaender: berechnung.anzahlLaender,
+          llmFirmenvorstellung,
+          llmMethodik,
+        });
+
+        // Bausteine und Länder aktualisieren
+        await db.deleteAngebotBausteine(input.id);
+        await db.deleteAngebotLaender(input.id);
+        await db.addAngebotBausteine(input.id, input.bausteine);
+        await db.addAngebotLaender(input.id, input.laenderIds);
+
+        return { success: true };
+      }),
   }),
 
   upload: router({

@@ -1,0 +1,1 @@
+ALTER TABLE `angebote` MODIFY COLUMN `status` enum('entwurf','fertig','gesendet','angenommen','abgelehnt') NOT NULL DEFAULT 'entwurf';

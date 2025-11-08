@@ -1,14 +1,25 @@
 import { useRoute, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { VersionsHistorie } from "@/components/VersionsHistorie";
+import { toast } from "sonner";
 
 export default function AngebotVorschau() {
   const [, params] = useRoute("/angebot/:id");
   const [, setLocation] = useLocation();
+  
+  const updateStatusMutation = trpc.angebot.updateStatus.useMutation({
+    onSuccess: () => {
+      toast.success("Angebot abgeschlossen");
+      window.location.reload();
+    },
+    onError: () => {
+      toast.error("Fehler beim Abschließen");
+    },
+  });
   const angebotId = params?.id ? parseInt(params.id) : 0;
 
   const { data, isLoading, error } = trpc.angebot.getById.useQuery({ id: angebotId });
@@ -38,6 +49,20 @@ export default function AngebotVorschau() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="mb-6 flex justify-end gap-2">
+          {angebot.status === "entwurf" && (
+            <Button
+              variant="default"
+              onClick={() => updateStatusMutation.mutate({ id: angebotId, status: "fertig" })}
+              disabled={updateStatusMutation.isPending}
+            >
+              {updateStatusMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-2" />
+              )}
+              Angebot abschließen
+            </Button>
+          )}
           <VersionsHistorie angebotId={angebotId} />
           <Button onClick={() => window.print()}>PDF herunterladen</Button>
         </div>
