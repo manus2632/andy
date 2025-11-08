@@ -180,3 +180,5 @@
 - [x] Fehlerursache identifizieren
 - [x] Upload-Funktion reparieren
 - [ ] Test mit Word-Dokument (manuell durch Benutzer)
+- [x] Server-Logs prüfen für "Fehler beim Verarbeiten"
+- [x] Upload-Fehler beheben (Base64-Encoding korrigiert)

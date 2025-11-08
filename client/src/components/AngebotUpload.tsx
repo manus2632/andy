@@ -72,10 +72,14 @@ export default function AngebotUpload({ onExtraktionErfolgreich }: AngebotUpload
     try {
       // Datei als ArrayBuffer lesen
       const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      // Mammoth wird serverseitig verwendet, wir senden den Buffer als Base64
-      const base64 = buffer.toString("base64");
+      
+      // ArrayBuffer zu Base64 konvertieren (Browser-kompatibel)
+      const uint8Array = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < uint8Array.length; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+      }
+      const base64 = btoa(binary);
 
       setProgress("Text wird extrahiert...");
 
@@ -100,9 +104,9 @@ export default function AngebotUpload({ onExtraktionErfolgreich }: AngebotUpload
       await analysiereMutation.mutateAsync({ dokumentText: text });
 
       setIsProcessing(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload-Fehler:", error);
-      toast.error("Fehler beim Verarbeiten der Datei");
+      toast.error(`Fehler: ${error.message || 'Unbekannter Fehler'}`);
       setIsProcessing(false);
     }
   };
