@@ -145,3 +145,10 @@
 
 - [x] Upload-Vorausfüllung testen
 - [x] Fehler in Formular-Vorausfüllung beheben
+
+## PDF-Generator
+
+- [x] Backend: PDF-Generierung mit puppeteer
+- [x] Backend: PDF-Endpoint für Angebote
+- [x] Frontend: PDF-Download-Button in AngebotVorschau
+- [x] PDF enthält nur Angebots-Inhalt (ohne Sidebar/Navigation)

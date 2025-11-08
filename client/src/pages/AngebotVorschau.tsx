@@ -64,7 +64,9 @@ export default function AngebotVorschau() {
             </Button>
           )}
           <VersionsHistorie angebotId={angebotId} />
-          <Button onClick={() => window.print()}>PDF herunterladen</Button>
+          <Button onClick={() => {
+            window.open(`/api/angebot/${angebotId}/pdf`, '_blank');
+          }}>PDF herunterladen</Button>
         </div>
 
         {/* Angebot Dokument */}

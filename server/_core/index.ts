@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import extractWordRouter from "../extractWordEndpoint";
+import { pdfRouter } from "../pdfEndpoint";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -38,6 +39,8 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Word extraction endpoint
   app.use("/api", extractWordRouter);
+  // PDF generation endpoint
+  app.use("/api", pdfRouter);
   // tRPC API
   app.use(
     "/api/trpc",
