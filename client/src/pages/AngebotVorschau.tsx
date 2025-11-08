@@ -5,6 +5,7 @@ import { Loader2, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { VersionsHistorie } from "@/components/VersionsHistorie";
+
 import { toast } from "sonner";
 
 export default function AngebotVorschau() {
@@ -67,6 +68,7 @@ export default function AngebotVorschau() {
           <Button onClick={() => {
             window.open(`/api/angebot/${angebotId}/pdf`, '_blank');
           }}>PDF herunterladen</Button>
+
         </div>
 
         {/* Angebot Dokument */}

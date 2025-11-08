@@ -61,7 +61,7 @@ pdfRouter.get('/angebot/:id/pdf', async (req, res) => {
   }
 });
 
-function generiereAngebotHTML(
+export function generiereAngebotHTML(
   angebot: any,
   bausteineData: any[],
   laenderData: any[],

@@ -164,3 +164,12 @@
 - [x] Word-Vorlagen analysieren für Bausteinbeschreibungen
 - [x] Seed-Script mit detaillierten Bausteinen erstellen
 - [x] Seed-Daten in Datenbank importieren
+
+## E-Mail-Versand
+
+- [x] Backend: E-Mail-Service mit nodemailer
+- [x] Backend: PDF als Anhang generieren
+- [x] Backend: E-Mail-Template für Angebote
+- [x] Backend: Status auf "gesendet" aktualisieren
+- [x] Frontend: E-Mail-Versand-Dialog mit Empfänger-Eingabe
+- [x] Frontend: E-Mail-Button in AngebotVorschau
