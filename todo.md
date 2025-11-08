@@ -136,3 +136,12 @@
 - [x] Schlichtes Text-Logo erstellen (SVG)
 - [x] Logo in const.ts referenzieren
 - [x] Alle "Andy"-Referenzen in Code ersetzen
+
+## Sidebar-Korrektur
+
+- [x] Untertitel "Andy - B+L Angebotsgenerator" entfernen oder auf "Bob" ändern
+
+## Upload-Funktion reparieren
+
+- [x] Upload-Vorausfüllung testen
+- [x] Fehler in Formular-Vorausfüllung beheben

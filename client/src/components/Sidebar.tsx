@@ -40,7 +40,10 @@ export function Sidebar({ className }: SidebarProps) {
         <div className="w-8 h-8 bg-black rounded flex items-center justify-center text-white font-bold text-sm">
           B
         </div>
-        <span className="font-semibold text-gray-900">{APP_TITLE}</span>
+        <div>
+          <div className="font-semibold text-gray-900">{APP_TITLE}</div>
+          <div className="text-xs text-gray-500">Angebotsgenerator</div>
+        </div>
       </div>
 
       {/* Navigation */}

@@ -290,8 +290,41 @@ export default function AngebotErstellen() {
           </h1>
           <AngebotUpload
             onExtraktionErfolgreich={(data) => {
-              setKundenname(data.angebotsdaten.kundenname);
-              setProjekttitel(data.angebotsdaten.projekttitel);
+              // Angebotsdaten vorausfüllen
+              if (data.angebotsdaten.kundenname) {
+                setKundenname(data.angebotsdaten.kundenname);
+              }
+              if (data.angebotsdaten.projekttitel) {
+                setProjekttitel(data.angebotsdaten.projekttitel);
+              }
+              
+              // Bausteine vorauswählen (nur IDs, falls bereits in DB)
+              if (data.bausteine && data.bausteine.length > 0 && bausteine) {
+                const bausteinIds = data.bausteine
+                  .map(b => {
+                    const existing = bausteine.find(
+                      db => db.name.toLowerCase() === b.name.toLowerCase()
+                    );
+                    return existing ? { bausteinId: existing.id } : null;
+                  })
+                  .filter((b): b is BausteinMitPreis => b !== null);
+                
+                setSelectedBausteine(bausteinIds);
+              }
+              
+              // Länder vorauswählen
+              if (data.angebotsdaten.laender && data.angebotsdaten.laender.length > 0 && laender) {
+                const laenderIds = data.angebotsdaten.laender
+                  .map(landName => {
+                    const existing = laender.find(
+                      l => l.name.toLowerCase() === landName.toLowerCase()
+                    );
+                    return existing ? existing.id : null;
+                  })
+                  .filter((id): id is number => id !== null);
+                
+                setSelectedLaender(laenderIds);
+              }
             }}
           />
         </div>
