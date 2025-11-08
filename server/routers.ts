@@ -2,8 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { sendeAngebotEmail } from "./emailService";
-import { generiereAngebotPDF } from "./pdfGenerator";
+
 import * as llmService from "./llmService";
 import * as dokumentExtraktion from "./dokumentExtraktion";
 import * as versionierung from "./versionierung";
@@ -516,62 +515,6 @@ export const appRouter = router({
       }),
   }),
 
-  email: router({
-    sendeAngebot: protectedProcedure
-      .input(z.object({ angebotId: z.number(), empfaengerEmail: z.string().email() }))
-      .mutation(async ({ input }) => {
-        const database = await getDb();
-        if (!database) throw new Error("Database not available");
-
-        // Angebot abrufen
-        const [angebot] = await database.select().from(angebote).where(eq(angebote.id, input.angebotId));
-        if (!angebot) throw new Error("Angebot nicht gefunden");
-
-        // Ansprechpartner abrufen
-        let ansprechpartnerData = null;
-        if (angebot.ansprechpartnerId) {
-          const [ap] = await database.select().from(ansprechpartner).where(eq(ansprechpartner.id, angebot.ansprechpartnerId));
-          ansprechpartnerData = ap;
-        }
-
-        // Bausteine abrufen
-        const angebotBausteineData = await database
-          .select({
-            baustein: bausteine,
-            angepassterPreis: angebotBausteine.angepassterPreis,
-          })
-          .from(angebotBausteine)
-          .innerJoin(bausteine, eq(angebotBausteine.bausteinId, bausteine.id))
-          .where(eq(angebotBausteine.angebotId, input.angebotId));
-
-        // Länder abrufen
-        const angebotLaenderData = await database
-          .select({ land: laender })
-          .from(angebotLaender)
-          .innerJoin(laender, eq(angebotLaender.landId, laender.id))
-          .where(eq(angebotLaender.angebotId, input.angebotId));
-
-        // PDF generieren
-        const { generiereAngebotHTML } = await import("./pdfEndpoint");
-        const html = generiereAngebotHTML(angebot, angebotBausteineData, angebotLaenderData, ansprechpartnerData);
-        const pdfBuffer = await generiereAngebotPDF(html);
-
-        // E-Mail senden
-        const erfolg = await sendeAngebotEmail(
-          input.empfaengerEmail,
-          angebot.kundenname,
-          angebot.projekttitel,
-          pdfBuffer
-        );
-
-        if (!erfolg) throw new Error("E-Mail-Versand fehlgeschlagen");
-
-        // Status auf "gesendet" aktualisieren
-        await database.update(angebote).set({ status: "gesendet" }).where(eq(angebote.id, input.angebotId));
-
-        return { success: true };
-      }),
-  }),
 });
 
 export type AppRouter = typeof appRouter;

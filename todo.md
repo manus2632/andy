@@ -173,3 +173,10 @@
 - [x] Backend: Status auf "gesendet" aktualisieren
 - [x] Frontend: E-Mail-Versand-Dialog mit Empfänger-Eingabe
 - [x] Frontend: E-Mail-Button in AngebotVorschau
+
+## Upload-Fehler beheben
+
+- [x] Upload-Endpoint prüfen
+- [x] Fehlerursache identifizieren
+- [x] Upload-Funktion reparieren
+- [ ] Test mit Word-Dokument (manuell durch Benutzer)
