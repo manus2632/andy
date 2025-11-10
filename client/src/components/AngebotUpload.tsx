@@ -32,9 +32,12 @@ export default function AngebotUpload({ onExtraktionErfolgreich }: AngebotUpload
     onSuccess: (data) => {
       const stats = (data as any).statistik;
       if (stats) {
-        toast.success(
-          `${stats.hinzugefuegt} Bausteine hinzugefügt${stats.uebersprungen > 0 ? `, ${stats.uebersprungen} Duplikate übersprungen` : ""}`
-        );
+        const messages = [
+          `${stats.hinzugefuegt} Bausteine hinzugefügt`,
+          stats.uebersprungen > 0 ? `${stats.uebersprungen} Duplikate übersprungen` : null,
+          stats.laenderGematcht !== undefined ? `${stats.laenderGematcht}/${stats.laenderGesamt} Länder zugeordnet` : null,
+        ].filter(Boolean).join(", ");
+        toast.success(messages);
       } else {
         toast.success("Angebot erfolgreich analysiert");
       }

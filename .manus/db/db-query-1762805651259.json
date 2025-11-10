@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, name FROM laender ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user KkYePwePPqTGytv.c495c602aa92 --database Y6nbYBJyWbWyHZ5jJWNNzm --execute SELECT id, name FROM laender ORDER BY name;",
+  "rows": [
+    {
+      "id": "20",
+      "name": "Australien"
+    },
+    {
+      "id": "9",
+      "name": "Belgien"
+    },
+    {
+      "id": "18",
+      "name": "China"
+    },
+    {
+      "id": "13",
+      "name": "Dänemark"
+    },
+    {
+      "id": "1",
+      "name": "Deutschland"
+    },
+    {
+      "id": "4",
+      "name": "Frankreich"
+    },
+    {
+      "id": "5",
+      "name": "Italien"
+    },
+    {
+      "id": "19",
+      "name": "Japan"
+    },
+    {
+      "id": "17",
+      "name": "Kanada"
+    },
+    {
+      "id": "8",
+      "name": "Niederlande"
+    },
+    {
+      "id": "11",
+      "name": "Norwegen"
+    },
+    {
+      "id": "2",
+      "name": "Österreich"
+    },
+    {
+      "id": "7",
+      "name": "Polen"
+    },
+    {
+      "id": "12",
+      "name": "Schweden"
+    },
+    {
+      "id": "3",
+      "name": "Schweiz"
+    },
+    {
+      "id": "6",
+      "name": "Spanien"
+    },
+    {
+      "id": "14",
+      "name": "Tschechien"
+    },
+    {
+      "id": "15",
+      "name": "Ungarn"
+    },
+    {
+      "id": "16",
+      "name": "USA"
+    },
+    {
+      "id": "10",
+      "name": "Vereinigtes Königreich"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n20\tAustralien\n9\tBelgien\n18\tChina\n13\tDänemark\n1\tDeutschland\n4\tFrankreich\n5\tItalien\n19\tJapan\n17\tKanada\n8\tNiederlande\n11\tNorwegen\n2\tÖsterreich\n7\tPolen\n12\tSchweden\n3\tSchweiz\n6\tSpanien\n14\tTschechien\n15\tUngarn\n16\tUSA\n10\tVereinigtes Königreich\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

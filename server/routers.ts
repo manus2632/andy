@@ -508,12 +508,23 @@ export const appRouter = router({
           }
         }
 
+        // Länder-Matching
+        const { matcheLaender } = await import('./laenderMapping');
+        const alleLaender = await db.getAllLaender();
+        const gematchteIds = matcheLaender(extrahiert.angebotsdaten.laender, alleLaender);
+
         return {
           ...extrahiert,
+          angebotsdaten: {
+            ...extrahiert.angebotsdaten,
+            laenderIds: gematchteIds,
+          },
           statistik: {
             hinzugefuegt,
             uebersprungen,
             gesamt: extrahiert.bausteine.length,
+            laenderGematcht: gematchteIds.length,
+            laenderGesamt: extrahiert.angebotsdaten.laender.length,
           },
         };
       }),

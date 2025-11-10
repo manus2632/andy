@@ -192,3 +192,5 @@
 - [x] Baustein-Bibliothek: Erweiterte Felder (Langbeschreibung, Lieferumfang, Unterpunkte, Methodik) anzeigen
 - [x] Angebots-Vorschau: Erweiterte Felder in Bausteindarstellung integrieren
 - [x] PDF-Export: Erweiterte Felder in PDF-Generator integrieren
+
+- [x] Länder-Matching: Automatische Zuordnung extrahierter Ländernamen zu DB-Einträgen (z.B. "Deutschland" → "Germany")

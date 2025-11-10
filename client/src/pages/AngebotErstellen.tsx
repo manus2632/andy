@@ -313,7 +313,11 @@ export default function AngebotErstellen() {
               }
               
               // Länder vorauswählen
-              if (data.angebotsdaten.laender && data.angebotsdaten.laender.length > 0 && laender) {
+              // Backend liefert bereits gematchte IDs
+              if ((data.angebotsdaten as any).laenderIds && (data.angebotsdaten as any).laenderIds.length > 0) {
+                setSelectedLaender((data.angebotsdaten as any).laenderIds);
+              } else if (data.angebotsdaten.laender && data.angebotsdaten.laender.length > 0 && laender) {
+                // Fallback: Manuelles Matching (falls Backend keine IDs liefert)
                 const laenderIds = data.angebotsdaten.laender
                   .map(landName => {
                     const existing = laender.find(
