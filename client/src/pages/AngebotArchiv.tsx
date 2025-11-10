@@ -235,7 +235,7 @@ export default function AngebotArchiv() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setLocation(`/?edit=${angebot.id}`)}
+                          onClick={() => setLocation(`/angebot/erstellen?edit=${angebot.id}`)}
                         >
                           <Edit className="h-4 w-4 mr-1" />
                           Bearbeiten
@@ -255,7 +255,8 @@ export default function AngebotArchiv() {
                           Duplizieren
                         </Button>
                       </div>
-                    </TableCell>                  </TableRow>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
             </TableBody>

@@ -185,3 +185,6 @@
 
 - [x] Duplikate-Problem beim Upload beheben (Deduplizierung funktioniert nicht korrekt)
 - [x] Lösung für ausführlichere Baustein-Inhalte entwickeln (Langbeschreibung, Lieferumfang, Unterpunkte, Methodik)
+
+- [x] Bearbeitungsfunktion reparieren (Formular wird nicht vorausgefüllt)
+- [x] Schließen-Button in Angebots-Vorschau hinzufügen

@@ -49,26 +49,33 @@ export default function AngebotVorschau() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-5xl">
-        <div className="mb-6 flex justify-end gap-2">
-          {angebot.status === "entwurf" && (
-            <Button
-              variant="default"
-              onClick={() => updateStatusMutation.mutate({ id: angebotId, status: "fertig" })}
-              disabled={updateStatusMutation.isPending}
-            >
-              {updateStatusMutation.isPending ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <CheckCircle className="h-4 w-4 mr-2" />
-              )}
-              Angebot abschließen
-            </Button>
-          )}
-          <VersionsHistorie angebotId={angebotId} />
-          <Button onClick={() => {
-            window.open(`/api/angebot/${angebotId}/pdf`, '_blank');
-          }}>PDF herunterladen</Button>
-
+        <div className="mb-6 flex justify-between items-center">
+          <Button
+            variant="outline"
+            onClick={() => setLocation("/archiv")}
+          >
+            Schließen
+          </Button>
+          <div className="flex gap-2">
+            {angebot.status === "entwurf" && (
+              <Button
+                variant="default"
+                onClick={() => updateStatusMutation.mutate({ id: angebotId, status: "fertig" })}
+                disabled={updateStatusMutation.isPending}
+              >
+                {updateStatusMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                )}
+                Angebot abschließen
+              </Button>
+            )}
+            <VersionsHistorie angebotId={angebotId} />
+            <Button onClick={() => {
+              window.open(`/api/angebot/${angebotId}/pdf`, '_blank');
+            }}>PDF herunterladen</Button>
+          </div>
         </div>
 
         {/* Angebot Dokument */}
