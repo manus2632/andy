@@ -243,14 +243,39 @@ export function generiereAngebotHTML(
       ${baustein.lieferumfang ? `
       <div class="baustein-section">
         <div class="baustein-section-title">Lieferumfang</div>
-        <div class="baustein-beschreibung">${baustein.lieferumfang}</div>
+        <ul>
+          ${(() => {
+            try {
+              const items = JSON.parse(baustein.lieferumfang);
+              return items.map((item: string) => `<li>${item}</li>`).join('');
+            } catch {
+              return `<div class="baustein-beschreibung">${baustein.lieferumfang}</div>`;
+            }
+          })()}
+        </ul>
       </div>
       ` : ''}
       
       ${baustein.unterpunkte ? `
       <div class="baustein-section">
         <div class="baustein-section-title">Unterpunkte</div>
-        <div class="baustein-beschreibung">${baustein.unterpunkte}</div>
+        ${(() => {
+          try {
+            const items = JSON.parse(baustein.unterpunkte);
+            const renderUnterpunkte = (punkte: any[], level = 0): string => {
+              return punkte.map(punkt => `
+                <div style="margin-left: ${level * 20}px; margin-bottom: 10px;">
+                  <strong>${punkt.titel}</strong>
+                  ${punkt.beschreibung ? `<div>${punkt.beschreibung}</div>` : ''}
+                  ${punkt.unterpunkte ? renderUnterpunkte(punkt.unterpunkte, level + 1) : ''}
+                </div>
+              `).join('');
+            };
+            return renderUnterpunkte(items);
+          } catch {
+            return `<div class="baustein-beschreibung">${baustein.unterpunkte}</div>`;
+          }
+        })()}
       </div>
       ` : ''}
       

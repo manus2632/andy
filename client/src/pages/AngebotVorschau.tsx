@@ -162,9 +162,16 @@ export default function AngebotVorschau() {
                   <div className="mb-3">
                     <p className="text-sm font-semibold mb-1">Lieferumfang:</p>
                     <ul className="list-disc list-inside space-y-1 text-sm">
-                      {baustein.lieferumfang.split('\n').filter(l => l.trim()).map((item, i) => (
-                        <li key={i}>{item.trim()}</li>
-                      ))}
+                      {(() => {
+                        try {
+                          const items = JSON.parse(baustein.lieferumfang);
+                          return items.map((item: string, i: number) => <li key={i}>{item}</li>);
+                        } catch {
+                          return baustein.lieferumfang.split('\n').filter(l => l.trim()).map((item, i) => (
+                            <li key={i}>{item.trim()}</li>
+                          ));
+                        }
+                      })()}
                     </ul>
                   </div>
                 )}

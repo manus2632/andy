@@ -205,6 +205,28 @@ export default function BausteinBibliothek() {
                     {baustein.beschreibung && (
                       <p className="text-gray-600 mb-2">{baustein.beschreibung}</p>
                     )}
+                    {baustein.langbeschreibung && (
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Detaillierte Beschreibung:</p>
+                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{baustein.langbeschreibung}</p>
+                      </div>
+                    )}
+                    {baustein.lieferumfang && (
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Lieferumfang:</p>
+                        <ul className="list-disc list-inside text-sm text-gray-600">
+                          {JSON.parse(baustein.lieferumfang).map((item: string, idx: number) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {baustein.methodik && (
+                      <div className="mb-3">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Methodik:</p>
+                        <p className="text-sm text-gray-600">{baustein.methodik}</p>
+                      </div>
+                    )}
                     {baustein.kategorie && (
                       <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
                         {baustein.kategorie}

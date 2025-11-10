@@ -188,3 +188,7 @@
 
 - [x] Bearbeitungsfunktion reparieren (Formular wird nicht vorausgefüllt)
 - [x] Schließen-Button in Angebots-Vorschau hinzufügen
+
+- [x] Baustein-Bibliothek: Erweiterte Felder (Langbeschreibung, Lieferumfang, Unterpunkte, Methodik) anzeigen
+- [x] Angebots-Vorschau: Erweiterte Felder in Bausteindarstellung integrieren
+- [x] PDF-Export: Erweiterte Felder in PDF-Generator integrieren
