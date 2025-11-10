@@ -1,0 +1,1 @@
+ALTER TABLE `bausteine` ADD CONSTRAINT `bausteine_name_einzelpreis_unique` UNIQUE(`name`,`einzelpreis`);

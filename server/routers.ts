@@ -495,6 +495,10 @@ export const appRouter = router({
             await db.createBaustein({
               name: baustein.name,
               beschreibung: baustein.beschreibung,
+              langbeschreibung: baustein.langbeschreibung || null,
+              lieferumfang: baustein.lieferumfang ? JSON.stringify(baustein.lieferumfang) : null,
+              unterpunkte: baustein.unterpunkte ? JSON.stringify(baustein.unterpunkte) : null,
+              methodik: baustein.methodik || null,
               einzelpreis: baustein.einzelpreis,
               kategorie: baustein.kategorie,
             });

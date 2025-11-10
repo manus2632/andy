@@ -1,0 +1,25 @@
+{
+  "query": "SELECT name, einzelpreis, COUNT(*) as anzahl FROM bausteine GROUP BY name, einzelpreis HAVING COUNT(*) > 1 ORDER BY anzahl DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user KkYePwePPqTGytv.c495c602aa92 --database Y6nbYBJyWbWyHZ5jJWNNzm --execute SELECT name, einzelpreis, COUNT(*) as anzahl FROM bausteine GROUP BY name, einzelpreis HAVING COUNT(*) > 1 ORDER BY anzahl DESC",
+  "rows": [
+    {
+      "name": "Marktgröße/-entwicklung",
+      "einzelpreis": "2300",
+      "anzahl": "2"
+    },
+    {
+      "name": "TOP-Anbieter",
+      "einzelpreis": "1600",
+      "anzahl": "2"
+    },
+    {
+      "name": "Firmenprofil",
+      "einzelpreis": "900",
+      "anzahl": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\teinzelpreis\tanzahl\nMarktgröße/-entwicklung\t2300\t2\nTOP-Anbieter\t1600\t2\nFirmenprofil\t900\t2\n",
+  "stderr": "",
+  "execution_time_ms": 776
+}

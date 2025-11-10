@@ -182,3 +182,6 @@
 - [ ] Test mit Word-Dokument (manuell durch Benutzer)
 - [x] Server-Logs prüfen für "Fehler beim Verarbeiten"
 - [x] Upload-Fehler beheben (Base64-Encoding korrigiert)
+
+- [x] Duplikate-Problem beim Upload beheben (Deduplizierung funktioniert nicht korrekt)
+- [x] Lösung für ausführlichere Baustein-Inhalte entwickeln (Langbeschreibung, Lieferumfang, Unterpunkte, Methodik)

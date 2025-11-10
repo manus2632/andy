@@ -50,6 +50,13 @@
       "when": 1762581344917,
       "tag": "0006_wild_wallop",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1762788443960,
+      "tag": "0007_closed_mephistopheles",
+      "breakpoints": true
     }
   ]
 }

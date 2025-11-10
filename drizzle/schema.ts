@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, unique } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
@@ -28,7 +28,9 @@ export const bausteine = mysqlTable("bausteine", {
   reihenfolge: int("reihenfolge").default(0),
   aktiv: boolean("aktiv").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueNamePreis: unique().on(table.name, table.einzelpreis),
+}));
 
 export type Baustein = typeof bausteine.$inferSelect;
 export type InsertBaustein = typeof bausteine.$inferInsert;

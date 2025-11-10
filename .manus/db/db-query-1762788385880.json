@@ -1,0 +1,124 @@
+{
+  "query": "SELECT id, name, einzelpreis, kategorie FROM bausteine ORDER BY name, einzelpreis",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user KkYePwePPqTGytv.c495c602aa92 --database Y6nbYBJyWbWyHZ5jJWNNzm --execute SELECT id, name, einzelpreis, kategorie FROM bausteine ORDER BY name, einzelpreis",
+  "rows": [
+    {
+      "id": "60001",
+      "name": "Absatzprognosen Bodenbeläge",
+      "einzelpreis": "1900",
+      "kategorie": "Marktdaten"
+    },
+    {
+      "id": "60007",
+      "name": "B+L Global Building Monitor Online-Portal (alle Länder)",
+      "einzelpreis": "15300",
+      "kategorie": "Online-Portal"
+    },
+    {
+      "id": "60008",
+      "name": "B+L Global Building Monitor Online-Portal (Uzin Utz Länderauswahl)",
+      "einzelpreis": "12400",
+      "kategorie": "Online-Portal"
+    },
+    {
+      "id": "4",
+      "name": "Distribution",
+      "einzelpreis": "800",
+      "kategorie": "Vertrieb"
+    },
+    {
+      "id": "30004",
+      "name": "Distribution",
+      "einzelpreis": "1600",
+      "kategorie": "Vertriebsanalyse"
+    },
+    {
+      "id": "60006",
+      "name": "Einmaliger Ersterhebungs- und Einrichtungsaufwand",
+      "einzelpreis": "14000",
+      "kategorie": "Service"
+    },
+    {
+      "id": "3",
+      "name": "Firmenprofil",
+      "einzelpreis": "900",
+      "kategorie": "Unternehmen"
+    },
+    {
+      "id": "30003",
+      "name": "Firmenprofil",
+      "einzelpreis": "900",
+      "kategorie": "Wettbewerbsanalyse"
+    },
+    {
+      "id": "1",
+      "name": "Marktgröße/-entwicklung",
+      "einzelpreis": "2300",
+      "kategorie": "Marktanalyse"
+    },
+    {
+      "id": "30001",
+      "name": "Marktgröße/-entwicklung",
+      "einzelpreis": "2300",
+      "kategorie": "Marktanalyse"
+    },
+    {
+      "id": "60009",
+      "name": "Persönliche Projektmeetings und Präsentationen",
+      "einzelpreis": "600",
+      "kategorie": "Service"
+    },
+    {
+      "id": "6",
+      "name": "Rahmendaten ausführlich",
+      "einzelpreis": "250",
+      "kategorie": "Rahmendaten"
+    },
+    {
+      "id": "5",
+      "name": "Rahmendaten kurz",
+      "einzelpreis": "0",
+      "kategorie": "Rahmendaten"
+    },
+    {
+      "id": "30002",
+      "name": "TOP-Anbieter",
+      "einzelpreis": "1600",
+      "kategorie": "Wettbewerbsanalyse"
+    },
+    {
+      "id": "2",
+      "name": "TOP-Anbieter",
+      "einzelpreis": "1600",
+      "kategorie": "Wettbewerb"
+    },
+    {
+      "id": "60004",
+      "name": "Verbrauch von Ausgleichsmassen",
+      "einzelpreis": "1540",
+      "kategorie": "Marktdaten"
+    },
+    {
+      "id": "60003",
+      "name": "Verbrauch von Bodenklebstoffen",
+      "einzelpreis": "2270",
+      "kategorie": "Marktdaten"
+    },
+    {
+      "id": "60005",
+      "name": "Verbrauch von Spachtelmasse",
+      "einzelpreis": "1540",
+      "kategorie": "Marktdaten"
+    },
+    {
+      "id": "60002",
+      "name": "Verlegearten nach Materialien",
+      "einzelpreis": "840",
+      "kategorie": "Marktdaten"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\teinzelpreis\tkategorie\n60001\tAbsatzprognosen Bodenbeläge\t1900\tMarktdaten\n60007\tB+L Global Building Monitor Online-Portal (alle Länder)\t15300\tOnline-Portal\n60008\tB+L Global Building Monitor Online-Portal (Uzin Utz Länderauswahl)\t12400\tOnline-Portal\n4\tDistribution\t800\tVertrieb\n30004\tDistribution\t1600\tVertriebsanalyse\n60006\tEinmaliger Ersterhebungs- und Einrichtungsaufwand\t14000\tService\n3\tFirmenprofil\t900\tUnternehmen\n30003\tFirmenprofil\t900\tWettbewerbsanalyse\n1\tMarktgröße/-entwicklung\t2300\tMarktanalyse\n30001\tMarktgröße/-entwicklung\t2300\tMarktanalyse\n60009\tPersönliche Projektmeetings und Präsentationen\t600\tService\n6\tRahmendaten ausführlich\t250\tRahmendaten\n5\tRahmendaten kurz\t0\tRahmendaten\n30002\tTOP-Anbieter\t1600\tWettbewerbsanalyse\n2\tTOP-Anbieter\t1600\tWettbewerb\n60004\tVerbrauch von Ausgleichsmassen\t1540\tMarktdaten\n60003\tVerbrauch von Bodenklebstoffen\t2270\tMarktdaten\n60005\tVerbrauch von Spachtelmasse\t1540\tMarktdaten\n60002\tVerlegearten nach Materialien\t840\tMarktdaten\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}
