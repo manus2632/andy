@@ -33,6 +33,7 @@ export default function BausteinBibliothek() {
     lieferumfang: "",
     unterpunkte: "",
     methodik: "",
+    bildUrl: "",
     einzelpreis: 0,
     kategorie: "",
     reihenfolge: 0,
@@ -102,6 +103,7 @@ export default function BausteinBibliothek() {
       lieferumfang: "",
       unterpunkte: "",
       methodik: "",
+      bildUrl: "",
       einzelpreis: 0,
       kategorie: "",
       reihenfolge: 0,
@@ -125,6 +127,7 @@ export default function BausteinBibliothek() {
       lieferumfang: baustein.lieferumfang || "",
       unterpunkte: baustein.unterpunkte || "",
       methodik: baustein.methodik || "",
+      bildUrl: baustein.bildUrl || "",
       einzelpreis: baustein.einzelpreis,
       kategorie: baustein.kategorie || "",
       reihenfolge: baustein.reihenfolge || 0,
@@ -199,12 +202,26 @@ export default function BausteinBibliothek() {
           <div className="grid gap-4">
             {bausteine.map((baustein) => (
               <Card key={baustein.id} className="p-6">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2">{baustein.name}</h3>
-                    {baustein.beschreibung && (
-                      <p className="text-gray-600 mb-2">{baustein.beschreibung}</p>
-                    )}
+                    <div className="flex items-start gap-4">
+                      {baustein.bildUrl && (
+                        <img
+                          src={baustein.bildUrl}
+                          alt={baustein.name}
+                          className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold mb-2">{baustein.name}</h3>
+                        {baustein.beschreibung && (
+                          <p className="text-gray-600 mb-2">{baustein.beschreibung}</p>
+                        )}
+                      </div>
+                    </div>
                     {baustein.langbeschreibung && (
                       <div className="mb-3">
                         <p className="text-sm font-medium text-gray-700 mb-1">Detaillierte Beschreibung:</p>
@@ -337,6 +354,18 @@ export default function BausteinBibliothek() {
                 />
               </div>
               <div>
+                <Label htmlFor="create-bildUrl">Bild-URL (optional)</Label>
+                <Input
+                  id="create-bildUrl"
+                  value={formData.bildUrl}
+                  onChange={(e) => setFormData({ ...formData, bildUrl: e.target.value })}
+                  placeholder="https://example.com/bild.jpg"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Geben Sie eine URL zu einem Bild ein, das den Baustein visualisiert.
+                </p>
+              </div>
+              <div>
                 <Label htmlFor="create-einzelpreis">Einzelpreis (EUR) *</Label>
                 <Input
                   id="create-einzelpreis"
@@ -450,6 +479,18 @@ export default function BausteinBibliothek() {
                   rows={4}
                   placeholder="Beschreibung der Datenerhebung"
                 />
+              </div>
+              <div>
+                <Label htmlFor="edit-bildUrl">Bild-URL (optional)</Label>
+                <Input
+                  id="edit-bildUrl"
+                  value={formData.bildUrl}
+                  onChange={(e) => setFormData({ ...formData, bildUrl: e.target.value })}
+                  placeholder="https://example.com/bild.jpg"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Geben Sie eine URL zu einem Bild ein, das den Baustein visualisiert.
+                </p>
               </div>
               <div>
                 <Label htmlFor="edit-einzelpreis">Einzelpreis (EUR) *</Label>

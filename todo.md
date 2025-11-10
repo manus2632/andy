@@ -194,3 +194,10 @@
 - [x] PDF-Export: Erweiterte Felder in PDF-Generator integrieren
 
 - [x] Länder-Matching: Automatische Zuordnung extrahierter Ländernamen zu DB-Einträgen (z.B. "Deutschland" → "Germany")
+
+- [x] Medien-Integration: Bild-Upload für Bausteine (DB-Schema erweitern)
+- [x] Medien-Integration: Upload-UI in Baustein-Bibliothek
+- [x] Medien-Integration: Bilder in PDF-Export automatisch platzieren
+- [x] Interaktiver Konfigurator: Frontend-Komponente für Kunden
+- [x] Interaktiver Konfigurator: Teilbare Links generieren
+- [x] Interaktiver Konfigurator: Live-Preisberechnung

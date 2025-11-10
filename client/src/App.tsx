@@ -9,21 +9,32 @@ import AngebotErstellen from "./pages/AngebotErstellen";
 import AngebotVorschau from "./pages/AngebotVorschau";
 import BausteinBibliothek from "./pages/BausteinBibliothek";
 import AngebotArchiv from "./pages/AngebotArchiv";
+import Konfigurator from "./pages/Konfigurator";
 import { AppLayout } from "./components/AppLayout";
 
 function Router() {
   return (
-    <AppLayout>
-      <Switch>
-        <Route path={"/"} component={AngebotErstellen} />
-        <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
-        <Route path={"/angebot/:id"} component={AngebotVorschau} />
-        <Route path={"/bausteine"} component={BausteinBibliothek} />
-        <Route path={"/archiv"} component={AngebotArchiv} />
-        <Route path={"/404"} component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </AppLayout>
+    <Switch>
+      {/* Öffentliche Route ohne Layout */}
+      <Route path={"/konfigurator/:token?"} component={Konfigurator} />
+      
+      {/* Geschützte Routen mit Layout */}
+      <Route path={"/*"}>
+        {() => (
+          <AppLayout>
+            <Switch>
+              <Route path={"/"} component={AngebotErstellen} />
+              <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
+              <Route path={"/angebot/:id"} component={AngebotVorschau} />
+              <Route path={"/bausteine"} component={BausteinBibliothek} />
+              <Route path={"/archiv"} component={AngebotArchiv} />
+              <Route path={"/404"} component={NotFound} />
+              <Route component={NotFound} />
+            </Switch>
+          </AppLayout>
+        )}
+      </Route>
+    </Switch>
   );
 }
 

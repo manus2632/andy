@@ -229,6 +229,12 @@ export function generiereAngebotHTML(
         <div class="baustein-preis">${preis.toLocaleString('de-DE')} EUR</div>
       </div>
       
+      ${baustein.bildUrl ? `
+      <div style="text-align: center; margin: 15px 0;">
+        <img src="${baustein.bildUrl}" alt="${baustein.name}" style="max-width: 400px; max-height: 300px; border-radius: 8px;" />
+      </div>
+      ` : ''}
+      
       ${baustein.beschreibung ? `
       <div class="baustein-beschreibung">${baustein.beschreibung}</div>
       ` : ''}

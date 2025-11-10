@@ -23,6 +23,7 @@ export const bausteine = mysqlTable("bausteine", {
   lieferumfang: text("lieferumfang"), // JSON Array: ["Excel-Tabellen", "PDF-Report", ...]
   unterpunkte: text("unterpunkte"), // JSON hierarchische Struktur
   methodik: text("methodik"), // Beschreibung der Erhebungsmethode
+  bildUrl: varchar("bildUrl", { length: 500 }), // URL zum Baustein-Bild (optional)
   einzelpreis: int("einzelpreis").notNull(), // Preis in EUR
   kategorie: varchar("kategorie", { length: 100 }),
   reihenfolge: int("reihenfolge").default(0),

@@ -1,7 +1,7 @@
 import { useRoute, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, Link as LinkIcon } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { VersionsHistorie } from "@/components/VersionsHistorie";
@@ -72,6 +72,19 @@ export default function AngebotVorschau() {
               </Button>
             )}
             <VersionsHistorie angebotId={angebotId} />
+            <Button
+              variant="outline"
+              onClick={() => {
+                const bausteinIds = bausteine.map((b: any) => b.id).join(',');
+                const laenderIds = laender.map(l => l.id).join(',');
+                const url = `${window.location.origin}/konfigurator?bausteine=${bausteinIds}&laender=${laenderIds}`;
+                navigator.clipboard.writeText(url);
+                toast.success("Konfigurator-Link in Zwischenablage kopiert");
+              }}
+            >
+              <LinkIcon className="h-4 w-4 mr-2" />
+              Konfigurator-Link kopieren
+            </Button>
             <Button onClick={() => {
               window.open(`/api/angebot/${angebotId}/pdf`, '_blank');
             }}>PDF herunterladen</Button>

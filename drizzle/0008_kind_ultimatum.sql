@@ -1,0 +1,1 @@
+ALTER TABLE `bausteine` ADD `bildUrl` varchar(500);
