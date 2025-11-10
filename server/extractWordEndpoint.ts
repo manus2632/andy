@@ -1,18 +1,20 @@
 import { Router } from "express";
+import multer from "multer";
 import { extrahiereTextAusWord } from "./dokumentExtraktion";
 
 const router = Router();
 
-router.post("/extract-word", async (req, res) => {
-  try {
-    const { fileData } = req.body;
+// Multer für In-Memory-Upload konfigurieren
+const upload = multer({ storage: multer.memoryStorage() });
 
-    if (!fileData) {
+router.post("/extract-word", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
       return res.status(400).json({ error: "Keine Datei übermittelt" });
     }
 
-    // Base64 zu Buffer konvertieren
-    const buffer = Buffer.from(fileData, "base64");
+    // Buffer direkt von Multer verwenden
+    const buffer = req.file.buffer;
 
     // Text extrahieren
     const text = await extrahiereTextAusWord(buffer);

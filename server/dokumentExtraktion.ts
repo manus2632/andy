@@ -106,57 +106,25 @@ Wichtig:
       {
         role: "system",
         content:
-          "Du bist ein Experte für strukturierte Datenextraktion aus Geschäftsdokumenten. Du antwortest ausschließlich mit validen JSON-Objekten.",
+          "Du bist ein Experte für strukturierte Datenextraktion aus Geschäftsdokumenten. Du antwortest ausschließlich mit validen JSON-Objekten ohne zusätzliche Erklärungen oder Markdown-Formatierung.",
       },
       { role: "user", content: prompt },
-    ],
-    {
-      type: "json_schema",
-      json_schema: {
-        name: "angebots_extraktion",
-        strict: true,
-        schema: {
-          type: "object",
-          properties: {
-            bausteine: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  name: { type: "string" },
-                  beschreibung: { type: "string" },
-                  einzelpreis: { type: "number" },
-                  kategorie: { type: "string" },
-                },
-                required: ["name", "beschreibung", "einzelpreis", "kategorie"],
-                additionalProperties: false,
-              },
-            },
-            angebotsdaten: {
-              type: "object",
-              properties: {
-                kundenname: { type: "string" },
-                projekttitel: { type: "string" },
-                laender: {
-                  type: "array",
-                  items: { type: "string" },
-                },
-              },
-              required: ["kundenname", "projekttitel", "laender"],
-              additionalProperties: false,
-            },
-          },
-          required: ["bausteine", "angebotsdaten"],
-          additionalProperties: false,
-        },
-      },
-    }
+    ]
   );
 
   try {
-    const extracted = JSON.parse(responseText);
+    // Entferne eventuelle Markdown-Code-Blöcke
+    let cleanedText = responseText.trim();
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/```\s*$/, "");
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/```\s*$/, "");
+    }
+    
+    const extracted = JSON.parse(cleanedText);
     return extracted as ExtrahierteBausteine;
   } catch (error) {
-    throw new Error("Fehler beim Parsen der LLM-Antwort");
+    console.error("LLM-Antwort:", responseText);
+    throw new Error(`Fehler beim Parsen der LLM-Antwort: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
   }
 }

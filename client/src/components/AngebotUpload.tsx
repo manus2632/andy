@@ -70,30 +70,21 @@ export default function AngebotUpload({ onExtraktionErfolgreich }: AngebotUpload
     setProgress("Dokument wird gelesen...");
 
     try {
-      // Datei als ArrayBuffer lesen
-      const arrayBuffer = await file.arrayBuffer();
-      
-      // ArrayBuffer zu Base64 konvertieren (Browser-kompatibel)
-      const uint8Array = new Uint8Array(arrayBuffer);
-      let binary = '';
-      for (let i = 0; i < uint8Array.length; i++) {
-        binary += String.fromCharCode(uint8Array[i]);
-      }
-      const base64 = btoa(binary);
-
       setProgress("Text wird extrahiert...");
+
+      // FormData für Multipart-Upload verwenden
+      const formData = new FormData();
+      formData.append("file", file);
 
       // Text-Extraktion über separaten Endpoint
       const response = await fetch("/api/extract-word", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileData: base64 }),
+        body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Fehler bei der Text-Extraktion");
+        const errorData = await response.json().catch(() => ({ error: "Unbekannter Fehler" }));
+        throw new Error(errorData.error || "Fehler bei der Text-Extraktion");
       }
 
       const { text } = await response.json();
