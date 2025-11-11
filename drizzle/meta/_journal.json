@@ -64,6 +64,13 @@
       "when": 1762812490128,
       "tag": "0008_kind_ultimatum",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1762845412623,
+      "tag": "0009_opposite_arachne",
+      "breakpoints": true
     }
   ]
 }

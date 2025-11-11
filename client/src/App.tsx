@@ -10,12 +10,14 @@ import AngebotVorschau from "./pages/AngebotVorschau";
 import BausteinBibliothek from "./pages/BausteinBibliothek";
 import AngebotArchiv from "./pages/AngebotArchiv";
 import Konfigurator from "./pages/Konfigurator";
+import Login from "./pages/Login";
 import { AppLayout } from "./components/AppLayout";
 
 function Router() {
   return (
     <Switch>
-      {/* Öffentliche Route ohne Layout */}
+      {/* Öffentliche Routen ohne Layout */}
+      <Route path={"/login"} component={Login} />
       <Route path={"/konfigurator/:token?"} component={Konfigurator} />
       
       {/* Geschützte Routen mit Layout */}

@@ -201,3 +201,11 @@
 - [x] Interaktiver Konfigurator: Frontend-Komponente für Kunden
 - [x] Interaktiver Konfigurator: Teilbare Links generieren
 - [x] Interaktiver Konfigurator: Live-Preisberechnung
+
+- [ ] Auth-System: Manus OAuth entfernen (Legacy-Code bleibt parallel)
+- [x] Auth-System: User/Passwort-Login implementieren (bcrypt)
+- [x] Auth-System: Login-UI erstellen (Formular statt OAuth-Redirect)
+- [x] Rollen-System: 3 Rollen definieren (Admin, intern, extern)
+- [ ] Rollen-System: Berechtigungen pro Rolle festlegen
+- [ ] User-Management: Admin-UI für Benutzerverwaltung
+- [ ] Deployment: Auth-Änderungen auf Hetzner-Server deployen

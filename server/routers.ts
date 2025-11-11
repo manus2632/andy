@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { authRouter } from "./auth/authRouter";
 
 import * as llmService from "./llmService";
 import * as dokumentExtraktion from "./dokumentExtraktion";
@@ -15,6 +16,9 @@ import { calculatePrice } from "./calculator";
 
 export const appRouter = router({
   system: systemRouter,
+  // Neues User/Passwort Auth-System
+  authNew: authRouter,
+  // Altes OAuth-System (deprecated, wird später entfernt)
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
