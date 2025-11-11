@@ -2,6 +2,7 @@ import { FileText, Archive, Package, Users, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { APP_TITLE } from "@/const";
+import { useAuthNew } from "@/hooks/useAuthNew";
 
 interface SidebarProps {
   className?: string;
@@ -32,6 +33,7 @@ const menuItems = [
 
 export function Sidebar({ className }: SidebarProps) {
   const [location, setLocation] = useLocation();
+  const { user } = useAuthNew();
 
   return (
     <div
@@ -54,6 +56,11 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {menuItems.map((item) => {
+          // Benutzer-Link nur für Admins anzeigen
+          if (item.path === "/benutzer" && user?.rolle !== "admin") {
+            return null;
+          }
+
           const Icon = item.icon;
           const isActive = location === item.path;
 

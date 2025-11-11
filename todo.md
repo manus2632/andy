@@ -214,3 +214,6 @@
 - [x] User-Management: Frontend-UI mit Tabelle und Dialogen
 - [x] User-Management: Admin-Berechtigung (nur Admins dürfen zugreifen)
 - [x] User-Management: Passwort-Änderung für Admins
+
+- [x] Rollen-Berechtigungen: Benutzer-Link in Sidebar nur für Admins anzeigen
+- [x] Rollen-Berechtigungen: Route-Guard für /benutzer (Redirect wenn nicht Admin)
