@@ -231,3 +231,9 @@
 - [x] Nginx: Als Reverse Proxy konfigurieren (HTTPS → Port 3000)
 - [x] Login-Schutz: Redirect zu /login für nicht-authentifizierte User aktivieren
 - [x] HTTP → HTTPS Redirect einrichten
+
+- [x] Mi42: Nginx-Konfiguration für mi42.bl2020.com erstellen (Port 3001)
+- [x] Mi42: SSL-Zertifikat mit Let's Encrypt installieren
+- [x] Mi42: HTTPS-Zugriff testen
+
+- [x] Logout-Button im Konfigurator für externe User hinzufügen

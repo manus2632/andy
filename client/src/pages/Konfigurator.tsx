@@ -5,15 +5,17 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, ShoppingCart, Check } from "lucide-react";
+import { Loader2, ShoppingCart, Check, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { APP_LOGO, APP_TITLE } from "@/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 /**
  * Interaktiver Konfigurator für Kunden
  * Ermöglicht Auswahl von Bausteinen und Ländern mit Live-Preisberechnung
  */
 export default function Konfigurator() {
+  const { logout } = useAuth();
   const [selectedBausteine, setSelectedBausteine] = useState<number[]>([]);
   const [selectedLaender, setSelectedLaender] = useState<number[]>([]);
   const [kundenname, setKundenname] = useState("");
@@ -100,14 +102,25 @@ export default function Konfigurator() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-4">
-            {APP_LOGO && (
-              <img src={APP_LOGO} alt={APP_TITLE} className="h-12" />
-            )}
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Angebots-Konfigurator</h1>
-              <p className="text-sm text-gray-600">Stellen Sie Ihr individuelles Angebot zusammen</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {APP_LOGO && (
+                <img src={APP_LOGO} alt={APP_TITLE} className="h-12" />
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Angebots-Konfigurator</h1>
+                <p className="text-sm text-gray-600">Stellen Sie Ihr individuelles Angebot zusammen</p>
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Abmelden
+            </Button>
           </div>
         </div>
       </header>

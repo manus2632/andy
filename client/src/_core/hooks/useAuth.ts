@@ -38,6 +38,10 @@ export function useAuth(options?: UseAuthOptions) {
     } finally {
       utils.auth.me.setData(undefined, null);
       await utils.auth.me.invalidate();
+      // JWT-Token aus localStorage entfernen
+      localStorage.removeItem('token');
+      // Zur Login-Seite navigieren
+      window.location.href = '/login';
     }
   }, [logoutMutation, utils]);
 
