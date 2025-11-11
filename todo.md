@@ -217,3 +217,7 @@
 
 - [x] Rollen-Berechtigungen: Benutzer-Link in Sidebar nur für Admins anzeigen
 - [x] Rollen-Berechtigungen: Route-Guard für /benutzer (Redirect wenn nicht Admin)
+
+- [ ] Externen User erstellen und Login testen
+- [ ] Externe User-Berechtigungen: Nur Konfigurator zugänglich, Rest gesperrt
+- [ ] Hetzner-Deployment: Aktuellen Stand deployen (JWT-Auth, Rollen, Testdaten)

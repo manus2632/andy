@@ -17,7 +17,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
     );
   }
 
-  if (!user || user.rolle !== "admin") {
+  if (!user || user.role !== "admin") {
     return <Redirect to="/" />;
   }
 

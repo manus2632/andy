@@ -35,6 +35,11 @@ export function Sidebar({ className }: SidebarProps) {
   const [location, setLocation] = useLocation();
   const { user } = useAuthNew();
 
+  // Externe User sehen keine Sidebar
+  if (user?.role === "extern") {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -57,7 +62,7 @@ export function Sidebar({ className }: SidebarProps) {
       <nav className="flex-1 px-3 py-4 space-y-1">
         {menuItems.map((item) => {
           // Benutzer-Link nur für Admins anzeigen
-          if (item.path === "/benutzer" && user?.rolle !== "admin") {
+          if (item.path === "/benutzer" && user?.role !== "admin") {
             return null;
           }
 

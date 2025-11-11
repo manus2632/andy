@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Benutzerverwaltung from "./pages/Benutzerverwaltung";
 import { AppLayout } from "./components/AppLayout";
 import { AdminRoute } from "./components/AdminRoute";
+import { ExternalRoute } from "./components/ExternalRoute";
 
 function Router() {
   return (
@@ -26,7 +27,8 @@ function Router() {
       <Route path={"/*"}>
         {() => (
           <AppLayout>
-            <Switch>
+            <ExternalRoute>
+              <Switch>
               <Route path={"/"} component={AngebotErstellen} />
               <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
               <Route path={"/angebot/:id"} component={AngebotVorschau} />
@@ -41,7 +43,8 @@ function Router() {
               </Route>
               <Route path={"/404"} component={NotFound} />
               <Route component={NotFound} />
-            </Switch>
+              </Switch>
+            </ExternalRoute>
           </AppLayout>
         )}
       </Route>
