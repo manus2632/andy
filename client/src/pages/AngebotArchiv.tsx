@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Loader2, Eye, Copy, ArrowUpDown, Search, Edit } from "lucide-react";
+import { Loader2, Eye, Copy, ArrowUpDown, Search, Edit, Download } from "lucide-react";
 import { format } from "date-fns";
 
 type SortField = "createdAt" | "projekttitel" | "kundenname" | "ansprechpartner";
@@ -253,6 +253,16 @@ export default function AngebotArchiv() {
                         >
                           <Copy className="h-4 w-4 mr-1" />
                           Duplizieren
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            window.open(`/api/angebot/${angebot.id}/pdf`, '_blank');
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          PDF
                         </Button>
                       </div>
                     </TableCell>

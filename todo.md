@@ -237,3 +237,22 @@
 - [x] Mi42: HTTPS-Zugriff testen
 
 - [x] Logout-Button im Konfigurator für externe User hinzufügen
+
+## PDF-Export im Archiv
+
+- [x] Frontend: PDF-Download-Button in Archiv-Tabelle hinzugefügt
+- [x] Frontend: PDF-Download-Funktion implementiert
+
+## Versionsvergleich
+
+- [x] Frontend: Versionshistorie-Dialog erstellt
+- [x] Frontend: Version wiederherstellen-Button hinzugefügt (UI vorhanden)
+- [ ] Backend: Wiederherstellen-Logik implementieren (optional)
+- [ ] Frontend: Versionen-Vergleichsansicht (optional)
+
+## Web-Recherche für Kundennews
+
+- [x] Backend: Web-Recherche-Funktion mit DuckDuckGo API
+- [x] Backend: News-Extraktion und Zusammenfassung per LLM
+- [x] Backend: Integration in Firmenvorstellung (als kundenspezifische Einleitung)
+- [ ] Frontend: Optional - News-Vorschau im Formular

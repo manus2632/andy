@@ -117,13 +117,44 @@ Schreibe NUR den Methodiktext, ohne Überschriften oder zusätzliche Formatierun
 }
 
 /**
- * Sucht nach aktuellen News über den Kunden (optional)
- * TODO: Web-Recherche implementieren
+ * Sucht nach aktuellen News über den Kunden mit DuckDuckGo
  */
 export async function sucheKundenNews(kundenname: string): Promise<string | null> {
-  // Placeholder für zukünftige Web-Recherche
-  // Kann später mit search-Tool oder Web-API erweitert werden
-  return null;
+  try {
+    // DuckDuckGo Instant Answer API (keine API-Key erforderlich)
+    const searchQuery = encodeURIComponent(`${kundenname} news`);
+    const response = await fetch(`https://api.duckduckgo.com/?q=${searchQuery}&format=json&no_html=1`);
+    
+    if (!response.ok) {
+      console.warn('DuckDuckGo API error:', response.status);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    // Abstract enthält oft relevante Informationen
+    if (data.Abstract) {
+      return data.Abstract;
+    }
+    
+    // Fallback: Related Topics durchsuchen
+    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+      const relevantTopics = data.RelatedTopics
+        .filter((topic: any) => topic.Text)
+        .slice(0, 3)
+        .map((topic: any) => topic.Text)
+        .join(' ');
+      
+      if (relevantTopics) {
+        return relevantTopics;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Fehler bei Kunden-News-Suche:', error);
+    return null;
+  }
 }
 
 /**

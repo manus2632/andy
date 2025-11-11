@@ -271,6 +271,7 @@ export async function updateAngebot(
     anzahlLaender: number;
     llmFirmenvorstellung: string | null;
     llmMethodik: string | null;
+    llmKundenEinleitung: string | null;
   }
 ) {
   const db = await getDb();

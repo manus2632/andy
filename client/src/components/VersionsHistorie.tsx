@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { Loader2, History, Plus } from "lucide-react";
+import { Loader2, History, Plus, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 
@@ -96,13 +96,19 @@ export function VersionsHistorie({ angebotId }: VersionsHistorieProps) {
                     <TableHead>Erstellt von</TableHead>
                     <TableHead>Änderungsgrund</TableHead>
                     <TableHead>Gesamtpreis</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {versionen.map((version) => (
+                  {versionen.map((version, index) => (
                     <TableRow key={version.id}>
                       <TableCell className="font-medium">
                         v{version.versionNummer}
+                        {index === 0 && (
+                          <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            Aktuell
+                          </span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {format(new Date(version.createdAt), "dd.MM.yyyy HH:mm", {
@@ -115,6 +121,22 @@ export function VersionsHistorie({ angebotId }: VersionsHistorieProps) {
                       </TableCell>
                       <TableCell>
                         {version.gesamtpreis.toLocaleString("de-DE")} EUR
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {index !== 0 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm(`Version v${version.versionNummer} wiederherstellen? Dies erstellt eine neue Version basierend auf den alten Daten.`)) {
+                                toast.info("Wiederherstellen-Funktion wird implementiert");
+                              }
+                            }}
+                          >
+                            <RotateCcw className="h-4 w-4 mr-1" />
+                            Wiederherstellen
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

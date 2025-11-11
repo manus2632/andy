@@ -177,9 +177,13 @@ export const appRouter = router({
           lieferart: input.lieferart,
         };
         
-        const [llmFirmenvorstellung, llmMethodik] = await Promise.all([
+        // Web-Recherche nach Kundennews (optional)
+        const kundenNews = await llmService.sucheKundenNews(input.kundenname);
+        
+        const [llmFirmenvorstellung, llmMethodik, kundenspezifischeEinleitung] = await Promise.all([
           llmService.generiereFirmenvorstellung(llmKontext),
           llmService.generiereMethodik(llmKontext),
+          kundenNews ? llmService.generiereKundenspezifischeEinleitung(llmKontext, kundenNews) : Promise.resolve(null),
         ]);
         
         const preise = input.bausteine.map((b) => {
@@ -208,7 +212,7 @@ export const appRouter = router({
           status: "entwurf",
           llmFirmenvorstellung,
           llmMethodik,
-          llmKundenEinleitung: null,
+          llmKundenEinleitung: kundenspezifischeEinleitung,
           createdBy: ctx.user.id,
         });
 
@@ -428,9 +432,13 @@ export const appRouter = router({
           lieferart: input.lieferart,
         };
 
-        const [llmFirmenvorstellung, llmMethodik] = await Promise.all([
+        // Web-Recherche nach Kundennews (optional)
+        const kundenNews = await llmService.sucheKundenNews(input.kundenname);
+        
+        const [llmFirmenvorstellung, llmMethodik, kundenspezifischeEinleitung] = await Promise.all([
           llmService.generiereFirmenvorstellung(llmKontext),
           llmService.generiereMethodik(llmKontext),
+          kundenNews ? llmService.generiereKundenspezifischeEinleitung(llmKontext, kundenNews) : Promise.resolve(null),
         ]);
 
         const preise = input.bausteine.map((b) => {
@@ -458,6 +466,7 @@ export const appRouter = router({
           anzahlLaender: berechnung.anzahlLaender,
           llmFirmenvorstellung,
           llmMethodik,
+          llmKundenEinleitung: kundenspezifischeEinleitung,
         });
 
         // Bausteine und Länder aktualisieren
