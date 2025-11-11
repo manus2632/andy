@@ -221,3 +221,8 @@
 - [ ] Externen User erstellen und Login testen
 - [ ] Externe User-Berechtigungen: Nur Konfigurator zugänglich, Rest gesperrt
 - [ ] Hetzner-Deployment: Aktuellen Stand deployen (JWT-Auth, Rollen, Testdaten)
+
+- [ ] Hetzner-Deployment: Aktuellen Stand deployen (JWT-Auth, Externe User-Berechtigungen)
+- [ ] Testuser: Sichere 6-stellige Passwörter generieren und setzen
+- [ ] Login/Logout: Alle User-Rollen testen (Admin, Intern, Extern)
+- [ ] Logout-Problem: Analysieren und beheben
