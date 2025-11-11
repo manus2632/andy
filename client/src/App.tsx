@@ -15,6 +15,7 @@ import Benutzerverwaltung from "./pages/Benutzerverwaltung";
 import { AppLayout } from "./components/AppLayout";
 import { AdminRoute } from "./components/AdminRoute";
 import { ExternalRoute } from "./components/ExternalRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function Router() {
   return (
@@ -26,9 +27,10 @@ function Router() {
       {/* Geschützte Routen mit Layout */}
       <Route path={"/*"}>
         {() => (
-          <AppLayout>
-            <ExternalRoute>
-              <Switch>
+          <ProtectedRoute>
+            <AppLayout>
+              <ExternalRoute>
+                <Switch>
               <Route path={"/"} component={AngebotErstellen} />
               <Route path={"/angebot/erstellen"} component={AngebotErstellen} />
               <Route path={"/angebot/:id"} component={AngebotVorschau} />
@@ -43,9 +45,10 @@ function Router() {
               </Route>
               <Route path={"/404"} component={NotFound} />
               <Route component={NotFound} />
-              </Switch>
-            </ExternalRoute>
-          </AppLayout>
+                </Switch>
+              </ExternalRoute>
+            </AppLayout>
+          </ProtectedRoute>
         )}
       </Route>
     </Switch>

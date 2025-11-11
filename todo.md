@@ -226,3 +226,8 @@
 - [ ] Testuser: Sichere 6-stellige Passwörter generieren und setzen
 - [ ] Login/Logout: Alle User-Rollen testen (Admin, Intern, Extern)
 - [ ] Logout-Problem: Analysieren und beheben
+
+- [x] SSL-Zertifikat: Let's Encrypt für andy.bl2020.com installieren
+- [x] Nginx: Als Reverse Proxy konfigurieren (HTTPS → Port 3000)
+- [x] Login-Schutz: Redirect zu /login für nicht-authentifizierte User aktivieren
+- [x] HTTP → HTTPS Redirect einrichten
