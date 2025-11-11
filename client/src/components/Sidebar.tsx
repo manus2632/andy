@@ -1,4 +1,4 @@
-import { FileText, Archive, Package, LogOut } from "lucide-react";
+import { FileText, Archive, Package, Users, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { APP_TITLE } from "@/const";
@@ -22,6 +22,11 @@ const menuItems = [
     label: "Bausteine",
     icon: Package,
     path: "/bausteine",
+  },
+  {
+    label: "Benutzer",
+    icon: Users,
+    path: "/benutzer",
   },
 ];
 

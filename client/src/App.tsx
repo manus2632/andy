@@ -11,6 +11,7 @@ import BausteinBibliothek from "./pages/BausteinBibliothek";
 import AngebotArchiv from "./pages/AngebotArchiv";
 import Konfigurator from "./pages/Konfigurator";
 import Login from "./pages/Login";
+import Benutzerverwaltung from "./pages/Benutzerverwaltung";
 import { AppLayout } from "./components/AppLayout";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
               <Route path={"/angebot/:id"} component={AngebotVorschau} />
               <Route path={"/bausteine"} component={BausteinBibliothek} />
               <Route path={"/archiv"} component={AngebotArchiv} />
+              <Route path={"/benutzer"} component={Benutzerverwaltung} />
               <Route path={"/404"} component={NotFound} />
               <Route component={NotFound} />
             </Switch>

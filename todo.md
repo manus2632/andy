@@ -209,3 +209,8 @@
 - [ ] Rollen-System: Berechtigungen pro Rolle festlegen
 - [ ] User-Management: Admin-UI für Benutzerverwaltung
 - [ ] Deployment: Auth-Änderungen auf Hetzner-Server deployen
+
+- [x] User-Management: Backend-Endpoints (getAllUsers, createUser, updateUser, deactivateUser)
+- [x] User-Management: Frontend-UI mit Tabelle und Dialogen
+- [x] User-Management: Admin-Berechtigung (nur Admins dürfen zugreifen)
+- [x] User-Management: Passwort-Änderung für Admins
