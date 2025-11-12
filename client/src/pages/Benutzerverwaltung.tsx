@@ -44,43 +44,43 @@ export default function Benutzerverwaltung() {
   const [newPassword, setNewPassword] = useState("");
 
   const utils = trpc.useUtils();
-  const { data: users, isLoading } = trpc.authNew.getAllUsers.useQuery();
+  const { data: users, isLoading } = trpc.auth.getAllUsers.useQuery();
 
-  const createMutation = trpc.authNew.createUser.useMutation({
+  const createMutation = trpc.auth.createUser.useMutation({
     onSuccess: () => {
       toast.success("Benutzer erfolgreich erstellt");
       setCreateDialogOpen(false);
       resetForm();
-      utils.authNew.getAllUsers.invalidate();
+      utils.auth.getAllUsers.invalidate();
     },
     onError: (error) => {
       toast.error(error.message || "Fehler beim Erstellen");
     },
   });
 
-  const updateMutation = trpc.authNew.updateUser.useMutation({
+  const updateMutation = trpc.auth.updateUser.useMutation({
     onSuccess: () => {
       toast.success("Benutzer erfolgreich aktualisiert");
       setEditDialogOpen(false);
       setSelectedUser(null);
-      utils.authNew.getAllUsers.invalidate();
+      utils.auth.getAllUsers.invalidate();
     },
     onError: (error) => {
       toast.error(error.message || "Fehler beim Aktualisieren");
     },
   });
 
-  const deactivateMutation = trpc.authNew.deactivateUser.useMutation({
+  const deactivateMutation = trpc.auth.deactivateUser.useMutation({
     onSuccess: () => {
       toast.success("Benutzer deaktiviert");
-      utils.authNew.getAllUsers.invalidate();
+      utils.auth.getAllUsers.invalidate();
     },
     onError: (error) => {
       toast.error(error.message || "Fehler beim Deaktivieren");
     },
   });
 
-  const changePasswordMutation = trpc.authNew.changeUserPassword.useMutation({
+  const changePasswordMutation = trpc.auth.changeUserPassword.useMutation({
     onSuccess: () => {
       toast.success("Passwort erfolgreich geändert");
       setPasswordDialogOpen(false);

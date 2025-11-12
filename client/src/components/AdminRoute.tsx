@@ -1,4 +1,4 @@
-import { useAuthNew } from "@/hooks/useAuthNew";
+import { useAuth } from "@/hooks/useAuth";
 import { Redirect } from "wouter";
 import { ReactNode } from "react";
 
@@ -7,7 +7,7 @@ interface AdminRouteProps {
 }
 
 export function AdminRoute({ children }: AdminRouteProps) {
-  const { user, loading } = useAuthNew();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (

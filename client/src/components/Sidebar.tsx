@@ -2,7 +2,7 @@ import { FileText, Archive, Package, Users, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { APP_TITLE } from "@/const";
-import { useAuthNew } from "@/hooks/useAuthNew";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SidebarProps {
   className?: string;
@@ -33,7 +33,7 @@ const menuItems = [
 
 export function Sidebar({ className }: SidebarProps) {
   const [location, setLocation] = useLocation();
-  const { user } = useAuthNew();
+  const { user } = useAuth();
 
   // Externe User sehen keine Sidebar
   if (user?.role === "extern") {

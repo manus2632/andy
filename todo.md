@@ -256,3 +256,12 @@
 - [x] Backend: News-Extraktion und Zusammenfassung per LLM
 - [x] Backend: Integration in Firmenvorstellung (als kundenspezifische Einleitung)
 - [ ] Frontend: Optional - News-Vorschau im Formular
+
+## OAuth-System entfernen und auf E-Mail/Passwort umstellen
+
+- [x] OAuth-Code aus server/_core/sdk.ts entfernen
+- [x] OAuth-Code aus server/_core/oauth.ts entfernen
+- [x] Context-System auf neues Auth umstellen
+- [x] Frontend auf neues Auth-System umgestellt
+- [x] Deployment testen
+- [x] Vollständiger Funktionstest durchgeführt

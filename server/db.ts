@@ -31,7 +31,8 @@ export async function getDb() {
   return _db;
 }
 
-// Auth-Funktionen wurden nach authDb.ts verschoben
+// Auth-Funktionen aus authDb.ts re-exportieren
+export { getUserById, getUserByEmail, validateLogin, createUser, updateUser, updateUserPassword, deactivateUser, getAllUsers } from "./authDb";
 
 // Bausteine
 export async function getAllBausteine() {

@@ -1,7 +1,6 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
-import { verifyToken } from "../auth/jwt";
+import { verifyToken, extractTokenFromCookie } from "../auth/jwt";
 import { getUserById } from "../authDb";
 
 export type TrpcContext = {
@@ -15,25 +14,41 @@ export async function createContext(
 ): Promise<TrpcContext> {
   let user: User | null = null;
 
-  // Try JWT auth first (new system)
-  const authHeader = opts.req.headers.authorization;
-  if (authHeader?.startsWith('Bearer ')) {
+  // Try cookie-based auth first
+  const cookieHeader = opts.req.headers.cookie;
+  const cookieToken = extractTokenFromCookie(cookieHeader);
+  
+  if (cookieToken) {
     try {
-      const token = authHeader.substring(7);
-      const decoded = verifyToken(token);
-      user = await getUserById(decoded.userId);
+      const decoded = verifyToken(cookieToken);
+      if (decoded) {
+        const foundUser = await getUserById(decoded.userId);
+        if (foundUser) {
+          user = foundUser;
+        }
+      }
     } catch (error) {
-      // JWT auth failed, try OAuth fallback
+      // Try fallback to Bearer token
     }
   }
 
-  // Fallback to OAuth (legacy system)
+  // Fallback: JWT auth via Authorization header
   if (!user) {
-    try {
-      user = await sdk.authenticateRequest(opts.req);
-    } catch (error) {
-      // Authentication is optional for public procedures.
-      user = null;
+    const authHeader = opts.req.headers.authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const decoded = verifyToken(token);
+        if (decoded) {
+          const foundUser = await getUserById(decoded.userId);
+          if (foundUser) {
+            user = foundUser;
+          }
+        }
+      } catch (error) {
+        // Authentication is optional for public procedures.
+        user = null;
+      }
     }
   }
 

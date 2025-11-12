@@ -1,7 +1,7 @@
 import { trpc } from "@/lib/trpc";
 
-export function useAuthNew() {
-  const { data: user, isLoading, error } = trpc.authNew.me.useQuery();
+export function useAuth() {
+  const { data: user, isLoading, error } = trpc.auth.me.useQuery();
 
   return {
     user: user || null,
