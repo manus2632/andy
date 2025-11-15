@@ -25,7 +25,7 @@ jobs:
             set -e
             
             echo "=== Starting Deployment ==="
-            cd /root/andy
+            cd /home/manus/projects/andy
             
             # Pull latest code
             echo "Pulling latest code from GitHub..."
@@ -46,7 +46,7 @@ jobs:
             
             # Show recent logs
             echo "=== Recent Logs ==="
-            docker logs andy-app --tail 30
+            docker logs andy-manus-app --tail 30
             
             echo "=== Deployment Complete ==="
 
@@ -61,22 +61,22 @@ jobs:
             sleep 10
             
             # Check if containers are running
-            if ! docker ps | grep -q andy-app; then
-              echo "ERROR: andy-app container not running!"
+            if ! docker ps | grep -q andy-manus-app; then
+              echo "ERROR: andy-manus-app container not running!"
               exit 1
             fi
             
-            if ! docker ps | grep -q andy-db; then
-              echo "ERROR: andy-db container not running!"
+            if ! docker ps | grep -q andy-manus-db; then
+              echo "ERROR: andy-manus-db container not running!"
               exit 1
             fi
             
-            # Test HTTP endpoint
+            # Test HTTP endpoint on port 3100
             echo "Testing application endpoint..."
-            if curl -f -s https://andy.bl2020.com/ > /dev/null; then
-              echo "✓ Application is responding"
+            if curl -f -s http://localhost:3100/ > /dev/null; then
+              echo "✓ Application is responding on port 3100"
             else
-              echo "WARNING: Application not responding on HTTPS (might need Nginx config)"
+              echo "WARNING: Application not responding on port 3100"
             fi
             
             echo "✓ Deployment health check passed"
