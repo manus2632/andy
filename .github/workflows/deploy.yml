@@ -1,0 +1,87 @@
+name: Deploy to Hetzner Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            set -e
+            
+            echo "=== Starting Deployment ==="
+            cd /root/andy
+            
+            # Pull latest code
+            echo "Pulling latest code from GitHub..."
+            git pull origin main
+            
+            # Rebuild and restart containers
+            echo "Rebuilding Docker containers..."
+            docker compose down
+            docker compose up -d --build
+            
+            # Wait for containers to start
+            echo "Waiting for containers to start..."
+            sleep 20
+            
+            # Show container status
+            echo "=== Container Status ==="
+            docker ps | grep andy
+            
+            # Show recent logs
+            echo "=== Recent Logs ==="
+            docker logs andy-app --tail 30
+            
+            echo "=== Deployment Complete ==="
+
+      - name: Health Check
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            # Wait for app to be fully ready
+            sleep 10
+            
+            # Check if containers are running
+            if ! docker ps | grep -q andy-app; then
+              echo "ERROR: andy-app container not running!"
+              exit 1
+            fi
+            
+            if ! docker ps | grep -q andy-db; then
+              echo "ERROR: andy-db container not running!"
+              exit 1
+            fi
+            
+            # Test HTTP endpoint
+            echo "Testing application endpoint..."
+            if curl -f -s https://andy.bl2020.com/ > /dev/null; then
+              echo "✓ Application is responding"
+            else
+              echo "WARNING: Application not responding on HTTPS (might need Nginx config)"
+            fi
+            
+            echo "✓ Deployment health check passed"
+
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "::error::Deployment failed! Check logs above."
